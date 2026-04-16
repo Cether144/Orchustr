@@ -45,7 +45,10 @@ impl BedrockConduit {
             http_client: Client::new(),
             model_id: model_id.into(),
             retry_policy: RetryPolicy::default_llm(),
-            token_budget: TokenBudget { max_context_tokens: 200_000, max_completion_tokens: 4_096 },
+            token_budget: TokenBudget {
+                max_context_tokens: 200_000,
+                max_completion_tokens: 4_096,
+            },
             timeout: Duration::from_secs(120),
         })
     }
@@ -58,17 +61,33 @@ impl BedrockConduit {
         )
     }
 
-    #[must_use] pub fn with_retry(mut self, p: RetryPolicy) -> Self { self.retry_policy = p; self }
-    #[must_use] pub fn with_budget(mut self, b: TokenBudget) -> Self { self.token_budget = b; self }
-    #[must_use] pub fn with_timeout(mut self, t: Duration) -> Self { self.timeout = t; self }
+    #[must_use]
+    pub fn with_retry(mut self, p: RetryPolicy) -> Self {
+        self.retry_policy = p;
+        self
+    }
+    #[must_use]
+    pub fn with_budget(mut self, b: TokenBudget) -> Self {
+        self.token_budget = b;
+        self
+    }
+    #[must_use]
+    pub fn with_timeout(mut self, t: Duration) -> Self {
+        self.timeout = t;
+        self
+    }
 }
 
 impl ConduitProvider for BedrockConduit {
-    async fn complete_messages(&self, messages: Vec<CompletionMessage>) -> Result<CompletionResponse, ConduitError> {
+    async fn complete_messages(
+        &self,
+        messages: Vec<CompletionMessage>,
+    ) -> Result<CompletionResponse, ConduitError> {
         let payload = bedrock_claude_payload(&messages, self.token_budget.max_completion_tokens)?;
         let headers = bearer_headers(&self.auth_token)?;
         let url = format!("{}/model/{}/invoke", self.base_url, self.model_id);
-        let response = self.http_client
+        let response = self
+            .http_client
             .post(&url)
             .headers(headers)
             .timeout(self.timeout)
@@ -80,7 +99,9 @@ impl ConduitProvider for BedrockConduit {
             let body = response.text().await.unwrap_or_default();
             return Err(ConduitError::Api { status, body });
         }
-        let body: Value = response.json().await
+        let body: Value = response
+            .json()
+            .await
             .map_err(|e| ConduitError::Serialization(e.to_string()))?;
         parse_bedrock_claude_response(&body)
     }

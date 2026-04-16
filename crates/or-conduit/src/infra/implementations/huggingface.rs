@@ -37,7 +37,10 @@ impl HuggingFaceConduit {
             http_client: Client::new(),
             model: model_str,
             retry_policy: RetryPolicy::default_llm(),
-            token_budget: TokenBudget { max_context_tokens: 32_000, max_completion_tokens: 2_048 },
+            token_budget: TokenBudget {
+                max_context_tokens: 32_000,
+                max_completion_tokens: 2_048,
+            },
             timeout: Duration::from_secs(120),
         })
     }
@@ -46,22 +49,54 @@ impl HuggingFaceConduit {
         Self::new(required_env("HF_API_KEY")?, required_env("HF_MODEL")?)
     }
 
-    #[must_use] pub fn with_retry(mut self, p: RetryPolicy) -> Self { self.retry_policy = p; self }
-    #[must_use] pub fn with_budget(mut self, b: TokenBudget) -> Self { self.token_budget = b; self }
-    #[must_use] pub fn with_timeout(mut self, t: Duration) -> Self { self.timeout = t; self }
+    #[must_use]
+    pub fn with_retry(mut self, p: RetryPolicy) -> Self {
+        self.retry_policy = p;
+        self
+    }
+    #[must_use]
+    pub fn with_budget(mut self, b: TokenBudget) -> Self {
+        self.token_budget = b;
+        self
+    }
+    #[must_use]
+    pub fn with_timeout(mut self, t: Duration) -> Self {
+        self.timeout = t;
+        self
+    }
 }
 
 impl ConduitProvider for HuggingFaceConduit {
-    async fn complete_messages(&self, messages: Vec<CompletionMessage>) -> Result<CompletionResponse, ConduitError> {
+    async fn complete_messages(
+        &self,
+        messages: Vec<CompletionMessage>,
+    ) -> Result<CompletionResponse, ConduitError> {
         // HF Inference: POST directly to base_url (model is in the URL)
-        self.complete("", huggingface_payload(&messages, self.token_budget.max_completion_tokens)?, &messages, bearer_headers(&self.api_key)?, parse_huggingface_response).await
+        self.complete(
+            "",
+            huggingface_payload(&messages, self.token_budget.max_completion_tokens)?,
+            &messages,
+            bearer_headers(&self.api_key)?,
+            parse_huggingface_response,
+        )
+        .await
     }
 }
 
 impl HttpConduit for HuggingFaceConduit {
-    fn base_url(&self) -> &str { &self.base_url }
-    fn client(&self) -> &Client { &self.http_client }
-    fn retry_policy(&self) -> &RetryPolicy { &self.retry_policy }
-    fn token_budget(&self) -> &TokenBudget { &self.token_budget }
-    fn timeout(&self) -> Duration { self.timeout }
+    fn base_url(&self) -> &str {
+        &self.base_url
+    }
+    fn client(&self) -> &Client {
+        &self.http_client
+    }
+    fn retry_policy(&self) -> &RetryPolicy {
+        &self.retry_policy
+    }
+    fn token_budget(&self) -> &TokenBudget {
+        &self.token_budget
+    }
+    fn timeout(&self) -> Duration {
+        self.timeout
+    }
 }

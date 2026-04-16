@@ -120,11 +120,21 @@ impl ConduitProvider for OpenAiCompatConduit {
 }
 
 impl HttpConduit for OpenAiCompatConduit {
-    fn base_url(&self) -> &str { &self.base_url }
-    fn client(&self) -> &Client { &self.http_client }
-    fn retry_policy(&self) -> &RetryPolicy { &self.retry_policy }
-    fn token_budget(&self) -> &TokenBudget { &self.token_budget }
-    fn timeout(&self) -> Duration { self.timeout }
+    fn base_url(&self) -> &str {
+        &self.base_url
+    }
+    fn client(&self) -> &Client {
+        &self.http_client
+    }
+    fn retry_policy(&self) -> &RetryPolicy {
+        &self.retry_policy
+    }
+    fn token_budget(&self) -> &TokenBudget {
+        &self.token_budget
+    }
+    fn timeout(&self) -> Duration {
+        self.timeout
+    }
 }
 
 // ── Factory constructors for specific providers ─────────────────────
@@ -149,7 +159,10 @@ fn chat_config(
 
 impl OpenAiCompatConduit {
     /// OpenAI Responses API (native format).
-    pub fn openai(api_key: impl Into<String>, model: impl Into<String>) -> Result<Self, ConduitError> {
+    pub fn openai(
+        api_key: impl Into<String>,
+        model: impl Into<String>,
+    ) -> Result<Self, ConduitError> {
         Self::from_config(OpenAiCompatConfig {
             api_key: api_key.into(),
             model: model.into(),
@@ -162,39 +175,102 @@ impl OpenAiCompatConduit {
     }
 
     pub fn openai_from_env() -> Result<Self, ConduitError> {
-        Self::openai(required_env("OPENAI_API_KEY")?, required_env("OPENAI_MODEL")?)
+        Self::openai(
+            required_env("OPENAI_API_KEY")?,
+            required_env("OPENAI_MODEL")?,
+        )
     }
 
-    pub fn openrouter(key: impl Into<String>, model: impl Into<String>) -> Result<Self, ConduitError> {
-        Self::from_config(chat_config(key.into(), model.into(), "https://openrouter.ai/api", 128_000, 4_096))
+    pub fn openrouter(
+        key: impl Into<String>,
+        model: impl Into<String>,
+    ) -> Result<Self, ConduitError> {
+        Self::from_config(chat_config(
+            key.into(),
+            model.into(),
+            "https://openrouter.ai/api",
+            128_000,
+            4_096,
+        ))
     }
 
-    pub fn together(key: impl Into<String>, model: impl Into<String>) -> Result<Self, ConduitError> {
-        Self::from_config(chat_config(key.into(), model.into(), "https://api.together.xyz", 128_000, 4_096))
+    pub fn together(
+        key: impl Into<String>,
+        model: impl Into<String>,
+    ) -> Result<Self, ConduitError> {
+        Self::from_config(chat_config(
+            key.into(),
+            model.into(),
+            "https://api.together.xyz",
+            128_000,
+            4_096,
+        ))
     }
 
     pub fn groq(key: impl Into<String>, model: impl Into<String>) -> Result<Self, ConduitError> {
-        Self::from_config(chat_config(key.into(), model.into(), "https://api.groq.com/openai", 128_000, 4_096))
+        Self::from_config(chat_config(
+            key.into(),
+            model.into(),
+            "https://api.groq.com/openai",
+            128_000,
+            4_096,
+        ))
     }
 
-    pub fn fireworks(key: impl Into<String>, model: impl Into<String>) -> Result<Self, ConduitError> {
-        Self::from_config(chat_config(key.into(), model.into(), "https://api.fireworks.ai/inference", 128_000, 4_096))
+    pub fn fireworks(
+        key: impl Into<String>,
+        model: impl Into<String>,
+    ) -> Result<Self, ConduitError> {
+        Self::from_config(chat_config(
+            key.into(),
+            model.into(),
+            "https://api.fireworks.ai/inference",
+            128_000,
+            4_096,
+        ))
     }
 
-    pub fn deepseek(key: impl Into<String>, model: impl Into<String>) -> Result<Self, ConduitError> {
-        Self::from_config(chat_config(key.into(), model.into(), "https://api.deepseek.com", 128_000, 4_096))
+    pub fn deepseek(
+        key: impl Into<String>,
+        model: impl Into<String>,
+    ) -> Result<Self, ConduitError> {
+        Self::from_config(chat_config(
+            key.into(),
+            model.into(),
+            "https://api.deepseek.com",
+            128_000,
+            4_096,
+        ))
     }
 
     pub fn mistral(key: impl Into<String>, model: impl Into<String>) -> Result<Self, ConduitError> {
-        Self::from_config(chat_config(key.into(), model.into(), "https://api.mistral.ai", 128_000, 4_096))
+        Self::from_config(chat_config(
+            key.into(),
+            model.into(),
+            "https://api.mistral.ai",
+            128_000,
+            4_096,
+        ))
     }
 
     pub fn xai(key: impl Into<String>, model: impl Into<String>) -> Result<Self, ConduitError> {
-        Self::from_config(chat_config(key.into(), model.into(), "https://api.x.ai", 128_000, 4_096))
+        Self::from_config(chat_config(
+            key.into(),
+            model.into(),
+            "https://api.x.ai",
+            128_000,
+            4_096,
+        ))
     }
 
     pub fn nvidia(key: impl Into<String>, model: impl Into<String>) -> Result<Self, ConduitError> {
-        Self::from_config(chat_config(key.into(), model.into(), "https://integrate.api.nvidia.com", 128_000, 4_096))
+        Self::from_config(chat_config(
+            key.into(),
+            model.into(),
+            "https://integrate.api.nvidia.com",
+            128_000,
+            4_096,
+        ))
     }
 
     pub fn ollama(model: impl Into<String>) -> Result<Self, ConduitError> {

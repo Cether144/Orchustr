@@ -69,10 +69,7 @@ fn multiple_variables_all_substituted() {
         .build()
         .unwrap();
     let rendered = PromptOrchestrator
-        .render_template(
-            &template,
-            &json!({"a": "x", "b": "y", "c": "z"}),
-        )
+        .render_template(&template, &json!({"a": "x", "b": "y", "c": "z"}))
         .unwrap();
     assert_eq!(rendered, "x and y and z");
 }

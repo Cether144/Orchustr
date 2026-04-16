@@ -40,30 +40,49 @@ impl ReplicateConduit {
             http_client: Client::new(),
             model: model.into(),
             retry_policy: RetryPolicy::default_llm(),
-            token_budget: TokenBudget { max_context_tokens: 128_000, max_completion_tokens: 4_096 },
+            token_budget: TokenBudget {
+                max_context_tokens: 128_000,
+                max_completion_tokens: 4_096,
+            },
             timeout: Duration::from_secs(300),
             poll_interval: Duration::from_secs(2),
         })
     }
 
     pub fn from_env() -> Result<Self, ConduitError> {
-        Self::new(required_env("REPLICATE_API_KEY")?, required_env("REPLICATE_MODEL")?)
+        Self::new(
+            required_env("REPLICATE_API_KEY")?,
+            required_env("REPLICATE_MODEL")?,
+        )
     }
 
-    #[must_use] pub fn with_retry(mut self, p: RetryPolicy) -> Self { self.retry_policy = p; self }
-    #[must_use] pub fn with_budget(mut self, b: TokenBudget) -> Self { self.token_budget = b; self }
-    #[must_use] pub fn with_timeout(mut self, t: Duration) -> Self { self.timeout = t; self }
+    #[must_use]
+    pub fn with_retry(mut self, p: RetryPolicy) -> Self {
+        self.retry_policy = p;
+        self
+    }
+    #[must_use]
+    pub fn with_budget(mut self, b: TokenBudget) -> Self {
+        self.token_budget = b;
+        self
+    }
+    #[must_use]
+    pub fn with_timeout(mut self, t: Duration) -> Self {
+        self.timeout = t;
+        self
+    }
 }
 
 impl ConduitProvider for ReplicateConduit {
-    async fn complete_messages(&self, messages: Vec<CompletionMessage>) -> Result<CompletionResponse, ConduitError> {
+    async fn complete_messages(
+        &self,
+        messages: Vec<CompletionMessage>,
+    ) -> Result<CompletionResponse, ConduitError> {
         let payload = replicate_payload(&messages)?;
         let headers = bearer_headers(&self.api_key)?;
-        let url = format!(
-            "{}/v1/models/{}/predictions",
-            self.base_url, self.model
-        );
-        let response = self.http_client
+        let url = format!("{}/v1/models/{}/predictions", self.base_url, self.model);
+        let response = self
+            .http_client
             .post(&url)
             .headers(headers.clone())
             .timeout(self.timeout)
@@ -89,7 +108,8 @@ impl ConduitProvider for ReplicateConduit {
             let poll_url = replicate_poll_url(&body)
                 .ok_or_else(|| ConduitError::Serialization("missing poll URL".to_owned()))?;
             tokio::time::sleep(self.poll_interval).await;
-            let poll_resp = self.http_client
+            let poll_resp = self
+                .http_client
                 .get(&poll_url)
                 .headers(headers.clone())
                 .timeout(Duration::from_secs(30))

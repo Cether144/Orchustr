@@ -1,6 +1,6 @@
 //! Stress tests: sequential graph chains, concurrent vector store, rapid builds.
 
-use or_core::{InMemoryVectorStore, VectorStore, OrchState};
+use or_core::{InMemoryVectorStore, OrchState, VectorStore};
 use or_loom::{GraphBuilder, LoomOrchestrator, NodeResult};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
@@ -42,11 +42,7 @@ async fn concurrent_vector_store_upserts() {
         let store = store.clone();
         handles.push(tokio::spawn(async move {
             store
-                .upsert(
-                    &format!("item-{i}"),
-                    vec![i as f32; 3],
-                    json!({"index": i}),
-                )
+                .upsert(&format!("item-{i}"), vec![i as f32; 3], json!({"index": i}))
                 .await
                 .unwrap();
         }));

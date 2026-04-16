@@ -21,9 +21,7 @@ pub(crate) fn huggingface_payload(
 }
 
 /// Parses a HuggingFace Inference API response.
-pub(crate) fn parse_huggingface_response(
-    body: &Value,
-) -> Result<CompletionResponse, ConduitError> {
+pub(crate) fn parse_huggingface_response(body: &Value) -> Result<CompletionResponse, ConduitError> {
     // HF Inference returns either an array or a single object.
     let text = if let Some(arr) = body.as_array() {
         arr.first()

@@ -5,7 +5,7 @@ use crate::infra::adapters::openai_compat::{openai_chat_payload, parse_openai_ch
 use crate::infra::http::{HttpConduit, required_env};
 use or_core::{RetryPolicy, TokenBudget};
 use reqwest::Client;
-use reqwest::header::{HeaderMap, HeaderValue, CONTENT_TYPE};
+use reqwest::header::{CONTENT_TYPE, HeaderMap, HeaderValue};
 use std::fmt;
 use std::time::Duration;
 
@@ -48,7 +48,10 @@ impl AzureConduit {
             deployment: deployment.into(),
             api_version: api_version.into(),
             retry_policy: RetryPolicy::default_llm(),
-            token_budget: TokenBudget { max_context_tokens: 128_000, max_completion_tokens: 4_096 },
+            token_budget: TokenBudget {
+                max_context_tokens: 128_000,
+                max_completion_tokens: 4_096,
+            },
             timeout: Duration::from_secs(60),
         })
     }
@@ -58,14 +61,25 @@ impl AzureConduit {
             required_env("AZURE_OPENAI_API_KEY")?,
             required_env("AZURE_OPENAI_ENDPOINT")?,
             required_env("AZURE_OPENAI_DEPLOYMENT")?,
-            required_env("AZURE_OPENAI_API_VERSION")
-                .unwrap_or_else(|_| "2024-06-01".to_owned()),
+            required_env("AZURE_OPENAI_API_VERSION").unwrap_or_else(|_| "2024-06-01".to_owned()),
         )
     }
 
-    #[must_use] pub fn with_retry(mut self, p: RetryPolicy) -> Self { self.retry_policy = p; self }
-    #[must_use] pub fn with_budget(mut self, b: TokenBudget) -> Self { self.token_budget = b; self }
-    #[must_use] pub fn with_timeout(mut self, t: Duration) -> Self { self.timeout = t; self }
+    #[must_use]
+    pub fn with_retry(mut self, p: RetryPolicy) -> Self {
+        self.retry_policy = p;
+        self
+    }
+    #[must_use]
+    pub fn with_budget(mut self, b: TokenBudget) -> Self {
+        self.token_budget = b;
+        self
+    }
+    #[must_use]
+    pub fn with_timeout(mut self, t: Duration) -> Self {
+        self.timeout = t;
+        self
+    }
 
     fn headers(&self) -> Result<HeaderMap, ConduitError> {
         let mut h = HeaderMap::new();
@@ -87,17 +101,41 @@ impl AzureConduit {
 }
 
 impl ConduitProvider for AzureConduit {
-    async fn complete_messages(&self, messages: Vec<CompletionMessage>) -> Result<CompletionResponse, ConduitError> {
+    async fn complete_messages(
+        &self,
+        messages: Vec<CompletionMessage>,
+    ) -> Result<CompletionResponse, ConduitError> {
         // Azure uses the deployment name, not model field in payload
-        let payload = openai_chat_payload(&self.deployment, &messages, self.token_budget.max_completion_tokens)?;
-        self.complete(&self.api_path(), payload, &messages, self.headers()?, parse_openai_chat_response).await
+        let payload = openai_chat_payload(
+            &self.deployment,
+            &messages,
+            self.token_budget.max_completion_tokens,
+        )?;
+        self.complete(
+            &self.api_path(),
+            payload,
+            &messages,
+            self.headers()?,
+            parse_openai_chat_response,
+        )
+        .await
     }
 }
 
 impl HttpConduit for AzureConduit {
-    fn base_url(&self) -> &str { &self.base_url }
-    fn client(&self) -> &Client { &self.http_client }
-    fn retry_policy(&self) -> &RetryPolicy { &self.retry_policy }
-    fn token_budget(&self) -> &TokenBudget { &self.token_budget }
-    fn timeout(&self) -> Duration { self.timeout }
+    fn base_url(&self) -> &str {
+        &self.base_url
+    }
+    fn client(&self) -> &Client {
+        &self.http_client
+    }
+    fn retry_policy(&self) -> &RetryPolicy {
+        &self.retry_policy
+    }
+    fn token_budget(&self) -> &TokenBudget {
+        &self.token_budget
+    }
+    fn timeout(&self) -> Duration {
+        self.timeout
+    }
 }

@@ -40,7 +40,11 @@ async fn retrieval_respects_top_k_limit() {
     let pipeline = AnchorPipeline::new().with_chunk_size(3);
     for i in 0..10 {
         AnchorOrchestrator
-            .index_document(&pipeline, &format!("doc-k-{i}"), &format!("chunk content {i}"))
+            .index_document(
+                &pipeline,
+                &format!("doc-k-{i}"),
+                &format!("chunk content {i}"),
+            )
             .await
             .unwrap();
     }
@@ -59,14 +63,21 @@ async fn retrieval_respects_top_k_limit() {
 async fn retrieval_handles_unicode_documents() {
     let pipeline = AnchorPipeline::new().with_chunk_size(5);
     AnchorOrchestrator
-        .index_document(&pipeline, "doc-uni", "日本語のテスト文書です。AIエージェントを構築しています。")
+        .index_document(
+            &pipeline,
+            "doc-uni",
+            "日本語のテスト文書です。AIエージェントを構築しています。",
+        )
         .await
         .unwrap();
     let results = AnchorOrchestrator
         .retrieve(&pipeline, "テスト", 1)
         .await
         .unwrap();
-    assert!(!results.is_empty(), "unicode retrieval should return results");
+    assert!(
+        !results.is_empty(),
+        "unicode retrieval should return results"
+    );
 }
 
 #[tokio::test]

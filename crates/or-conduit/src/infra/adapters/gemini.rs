@@ -1,12 +1,12 @@
-use crate::domain::entities::{CompletionMessage, CompletionResponse, ContentPart, FinishReason, MessageRole};
+use crate::domain::entities::{
+    CompletionMessage, CompletionResponse, ContentPart, FinishReason, MessageRole,
+};
 use crate::domain::errors::ConduitError;
 use or_core::TokenUsage;
 use serde_json::{Value, json};
 
 /// Builds a Google Gemini `generateContent` payload.
-pub(crate) fn gemini_payload(
-    messages: &[CompletionMessage],
-) -> Result<Value, ConduitError> {
+pub(crate) fn gemini_payload(messages: &[CompletionMessage]) -> Result<Value, ConduitError> {
     let contents = messages
         .iter()
         .map(gemini_content)
@@ -31,10 +31,12 @@ pub(crate) fn parse_gemini_response(body: &Value) -> Result<CompletionResponse, 
             "Gemini response missing text".to_owned(),
         ));
     }
-    let prompt_tokens =
-        body["usageMetadata"]["promptTokenCount"].as_u64().unwrap_or_default() as u32;
-    let completion_tokens =
-        body["usageMetadata"]["candidatesTokenCount"].as_u64().unwrap_or_default() as u32;
+    let prompt_tokens = body["usageMetadata"]["promptTokenCount"]
+        .as_u64()
+        .unwrap_or_default() as u32;
+    let completion_tokens = body["usageMetadata"]["candidatesTokenCount"]
+        .as_u64()
+        .unwrap_or_default() as u32;
     let usage = TokenUsage {
         prompt_tokens,
         completion_tokens,
@@ -45,7 +47,11 @@ pub(crate) fn parse_gemini_response(body: &Value) -> Result<CompletionResponse, 
         Some("SAFETY") => FinishReason::ContentFilter,
         _ => FinishReason::Stop,
     };
-    Ok(CompletionResponse { text, usage, finish_reason })
+    Ok(CompletionResponse {
+        text,
+        usage,
+        finish_reason,
+    })
 }
 
 fn gemini_content(message: &CompletionMessage) -> Result<Value, ConduitError> {
@@ -78,4 +84,3 @@ fn gemini_part(part: &ContentPart) -> Result<Value, ConduitError> {
         }
     }
 }
-

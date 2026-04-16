@@ -1,5 +1,5 @@
 //! Observability & tracing tests for or-core and or-prism.
-//! Validates that tracing spans emit correctly and error handling 
+//! Validates that tracing spans emit correctly and error handling
 //! integrates with the observability layer.
 
 use or_core::{CoreOrchestrator, RetryPolicy, TokenBudget};

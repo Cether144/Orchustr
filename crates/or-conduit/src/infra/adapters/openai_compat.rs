@@ -39,7 +39,11 @@ pub(crate) fn parse_openai_response(body: &Value) -> Result<CompletionResponse, 
         total_tokens: body["usage"]["total_tokens"].as_u64().unwrap_or_default() as u32,
     };
     let finish_reason = parse_openai_finish_reason(body);
-    Ok(CompletionResponse { text, usage, finish_reason })
+    Ok(CompletionResponse {
+        text,
+        usage,
+        finish_reason,
+    })
 }
 
 /// Builds an OpenAI chat completions payload (for `/v1/chat/completions`).
@@ -56,9 +60,7 @@ pub(crate) fn openai_chat_payload(
 }
 
 /// Parses a standard OpenAI chat completions response.
-pub(crate) fn parse_openai_chat_response(
-    body: &Value,
-) -> Result<CompletionResponse, ConduitError> {
+pub(crate) fn parse_openai_chat_response(body: &Value) -> Result<CompletionResponse, ConduitError> {
     let choice = body["choices"]
         .as_array()
         .and_then(|arr| arr.first())
@@ -74,7 +76,9 @@ pub(crate) fn parse_openai_chat_response(
     }
     let usage = TokenUsage {
         prompt_tokens: body["usage"]["prompt_tokens"].as_u64().unwrap_or_default() as u32,
-        completion_tokens: body["usage"]["completion_tokens"].as_u64().unwrap_or_default() as u32,
+        completion_tokens: body["usage"]["completion_tokens"]
+            .as_u64()
+            .unwrap_or_default() as u32,
         total_tokens: body["usage"]["total_tokens"].as_u64().unwrap_or_default() as u32,
     };
     let finish_reason = match choice["finish_reason"].as_str() {
@@ -83,7 +87,11 @@ pub(crate) fn parse_openai_chat_response(
         Some("content_filter") => FinishReason::ContentFilter,
         _ => FinishReason::Stop,
     };
-    Ok(CompletionResponse { text, usage, finish_reason })
+    Ok(CompletionResponse {
+        text,
+        usage,
+        finish_reason,
+    })
 }
 
 fn openai_message(message: &CompletionMessage) -> Result<Value, ConduitError> {

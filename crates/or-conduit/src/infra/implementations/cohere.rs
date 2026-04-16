@@ -36,30 +36,68 @@ impl CohereConduit {
             http_client: Client::new(),
             model: model.into(),
             retry_policy: RetryPolicy::default_llm(),
-            token_budget: TokenBudget { max_context_tokens: 128_000, max_completion_tokens: 4_096 },
+            token_budget: TokenBudget {
+                max_context_tokens: 128_000,
+                max_completion_tokens: 4_096,
+            },
             timeout: Duration::from_secs(60),
         })
     }
 
     pub fn from_env() -> Result<Self, ConduitError> {
-        Self::new(required_env("COHERE_API_KEY")?, required_env("COHERE_MODEL")?)
+        Self::new(
+            required_env("COHERE_API_KEY")?,
+            required_env("COHERE_MODEL")?,
+        )
     }
 
-    #[must_use] pub fn with_retry(mut self, p: RetryPolicy) -> Self { self.retry_policy = p; self }
-    #[must_use] pub fn with_budget(mut self, b: TokenBudget) -> Self { self.token_budget = b; self }
-    #[must_use] pub fn with_timeout(mut self, t: Duration) -> Self { self.timeout = t; self }
+    #[must_use]
+    pub fn with_retry(mut self, p: RetryPolicy) -> Self {
+        self.retry_policy = p;
+        self
+    }
+    #[must_use]
+    pub fn with_budget(mut self, b: TokenBudget) -> Self {
+        self.token_budget = b;
+        self
+    }
+    #[must_use]
+    pub fn with_timeout(mut self, t: Duration) -> Self {
+        self.timeout = t;
+        self
+    }
 }
 
 impl ConduitProvider for CohereConduit {
-    async fn complete_messages(&self, messages: Vec<CompletionMessage>) -> Result<CompletionResponse, ConduitError> {
-        self.complete("/v2/chat", cohere_payload(&self.model, &messages)?, &messages, bearer_headers(&self.api_key)?, parse_cohere_response).await
+    async fn complete_messages(
+        &self,
+        messages: Vec<CompletionMessage>,
+    ) -> Result<CompletionResponse, ConduitError> {
+        self.complete(
+            "/v2/chat",
+            cohere_payload(&self.model, &messages)?,
+            &messages,
+            bearer_headers(&self.api_key)?,
+            parse_cohere_response,
+        )
+        .await
     }
 }
 
 impl HttpConduit for CohereConduit {
-    fn base_url(&self) -> &str { &self.base_url }
-    fn client(&self) -> &Client { &self.http_client }
-    fn retry_policy(&self) -> &RetryPolicy { &self.retry_policy }
-    fn token_budget(&self) -> &TokenBudget { &self.token_budget }
-    fn timeout(&self) -> Duration { self.timeout }
+    fn base_url(&self) -> &str {
+        &self.base_url
+    }
+    fn client(&self) -> &Client {
+        &self.http_client
+    }
+    fn retry_policy(&self) -> &RetryPolicy {
+        &self.retry_policy
+    }
+    fn token_budget(&self) -> &TokenBudget {
+        &self.token_budget
+    }
+    fn timeout(&self) -> Duration {
+        self.timeout
+    }
 }

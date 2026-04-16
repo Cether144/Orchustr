@@ -36,9 +36,7 @@ pub(crate) fn anthropic_payload(
     }))
 }
 
-pub(crate) fn parse_anthropic_response(
-    body: &Value,
-) -> Result<CompletionResponse, ConduitError> {
+pub(crate) fn parse_anthropic_response(body: &Value) -> Result<CompletionResponse, ConduitError> {
     let text = body["content"]
         .as_array()
         .into_iter()
@@ -63,7 +61,11 @@ pub(crate) fn parse_anthropic_response(
         Some("tool_use") => FinishReason::ToolCall,
         _ => FinishReason::Stop,
     };
-    Ok(CompletionResponse { text, usage, finish_reason })
+    Ok(CompletionResponse {
+        text,
+        usage,
+        finish_reason,
+    })
 }
 
 fn anthropic_content(parts: &[ContentPart]) -> Result<Vec<Value>, ConduitError> {

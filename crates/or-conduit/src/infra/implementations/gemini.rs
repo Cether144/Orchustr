@@ -5,7 +5,7 @@ use crate::infra::adapters::gemini::{gemini_payload, parse_gemini_response};
 use crate::infra::http::required_env;
 use or_core::{RetryPolicy, TokenBudget};
 use reqwest::Client;
-use reqwest::header::{HeaderMap, HeaderValue, CONTENT_TYPE};
+use reqwest::header::{CONTENT_TYPE, HeaderMap, HeaderValue};
 use serde_json::Value;
 use std::fmt;
 use std::time::Duration;
@@ -49,7 +49,10 @@ impl GeminiConduit {
     }
 
     pub fn from_env() -> Result<Self, ConduitError> {
-        Self::new(required_env("GEMINI_API_KEY")?, required_env("GEMINI_MODEL")?)
+        Self::new(
+            required_env("GEMINI_API_KEY")?,
+            required_env("GEMINI_MODEL")?,
+        )
     }
 
     #[must_use]

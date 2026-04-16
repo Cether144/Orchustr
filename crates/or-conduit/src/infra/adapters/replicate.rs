@@ -1,14 +1,10 @@
-use crate::domain::entities::{
-    CompletionMessage, CompletionResponse, ContentPart, FinishReason,
-};
+use crate::domain::entities::{CompletionMessage, CompletionResponse, ContentPart, FinishReason};
 use crate::domain::errors::ConduitError;
 use or_core::TokenUsage;
 use serde_json::{Value, json};
 
 /// Builds a Replicate Predictions API payload.
-pub(crate) fn replicate_payload(
-    messages: &[CompletionMessage],
-) -> Result<Value, ConduitError> {
+pub(crate) fn replicate_payload(messages: &[CompletionMessage]) -> Result<Value, ConduitError> {
     let prompt = messages
         .iter()
         .flat_map(|msg| &msg.content)
@@ -23,9 +19,7 @@ pub(crate) fn replicate_payload(
 
 /// Parses a Replicate Predictions API response.
 /// Supports both synchronous and polling-based responses.
-pub(crate) fn parse_replicate_response(
-    body: &Value,
-) -> Result<CompletionResponse, ConduitError> {
+pub(crate) fn parse_replicate_response(body: &Value) -> Result<CompletionResponse, ConduitError> {
     // Replicate returns output as a string or array of strings.
     let text = if let Some(output_str) = body["output"].as_str() {
         output_str.to_owned()
@@ -57,7 +51,11 @@ pub(crate) fn parse_replicate_response(
     } else {
         FinishReason::Length
     };
-    Ok(CompletionResponse { text, usage, finish_reason })
+    Ok(CompletionResponse {
+        text,
+        usage,
+        finish_reason,
+    })
 }
 
 /// Checks if a Replicate prediction is still processing.

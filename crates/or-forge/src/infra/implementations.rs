@@ -61,9 +61,7 @@ pub(crate) async fn invoke_tool(
     args: serde_json::Value,
 ) -> Result<serde_json::Value, ForgeError> {
     const MAX_ARG_BYTES: usize = 1_048_576; // 1 MB
-    let arg_size = serde_json::to_string(&args)
-        .map(|s| s.len())
-        .unwrap_or(0);
+    let arg_size = serde_json::to_string(&args).map(|s| s.len()).unwrap_or(0);
     if arg_size > MAX_ARG_BYTES {
         return Err(ForgeError::InvalidArguments(format!(
             "argument payload too large: {arg_size} bytes (max {MAX_ARG_BYTES})"

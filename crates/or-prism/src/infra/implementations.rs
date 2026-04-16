@@ -32,4 +32,3 @@ pub(crate) fn install(config: &PrismConfig) -> Result<(), PrismError> {
     opentelemetry::global::set_tracer_provider(provider);
     Ok(())
 }
-

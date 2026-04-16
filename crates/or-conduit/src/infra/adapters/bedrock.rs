@@ -74,7 +74,11 @@ pub(crate) fn parse_bedrock_claude_response(
         Some("tool_use") => FinishReason::ToolCall,
         _ => FinishReason::Stop,
     };
-    Ok(CompletionResponse { text, usage, finish_reason })
+    Ok(CompletionResponse {
+        text,
+        usage,
+        finish_reason,
+    })
 }
 
 fn bedrock_content(parts: &[ContentPart]) -> Vec<Value> {

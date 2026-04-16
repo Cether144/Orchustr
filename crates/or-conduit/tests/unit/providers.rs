@@ -13,7 +13,10 @@ use or_conduit::{
 fn openai_conduit_constructs_with_explicit_key() {
     let c = OpenAiCompatConduit::openai("sk-test", "gpt-4o").unwrap();
     let dbg = format!("{c:?}");
-    assert!(dbg.contains("REDACTED"), "api_key must be redacted in Debug");
+    assert!(
+        dbg.contains("REDACTED"),
+        "api_key must be redacted in Debug"
+    );
     assert!(!dbg.contains("sk-test"), "raw key must not leak in Debug");
 }
 
@@ -21,7 +24,10 @@ fn openai_conduit_constructs_with_explicit_key() {
 fn openrouter_conduit_constructs_with_explicit_key() {
     let c = OpenAiCompatConduit::openrouter("or-key", "meta-llama/llama-3").unwrap();
     let dbg = format!("{c:?}");
-    assert!(dbg.contains("openrouter.ai"), "base_url should be openrouter");
+    assert!(
+        dbg.contains("openrouter.ai"),
+        "base_url should be openrouter"
+    );
     assert!(dbg.contains("REDACTED"));
 }
 
@@ -133,8 +139,13 @@ fn replicate_conduit_constructs_and_redacts() {
 
 #[test]
 fn azure_conduit_constructs_and_redacts() {
-    let c = AzureConduit::new("az-key", "https://my.openai.azure.com", "gpt-4o", "2024-02-01")
-        .unwrap();
+    let c = AzureConduit::new(
+        "az-key",
+        "https://my.openai.azure.com",
+        "gpt-4o",
+        "2024-02-01",
+    )
+    .unwrap();
     let dbg = format!("{c:?}");
     assert!(dbg.contains("REDACTED"));
     assert!(!dbg.contains("az-key"));

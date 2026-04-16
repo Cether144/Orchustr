@@ -84,10 +84,16 @@ async fn nexus_client_and_server_round_trip_tools_and_tasks() {
     let server_task = tokio::spawn(async move { server.serve().await });
     let client = NexusClient::new(client_transport);
 
-    let initialized = client.initialize().await.expect("initialize should succeed");
+    let initialized = client
+        .initialize()
+        .await
+        .expect("initialize should succeed");
     assert_eq!(initialized["protocolVersion"], "2025-11-25");
 
-    let tools = client.list_tools().await.expect("tools/list should succeed");
+    let tools = client
+        .list_tools()
+        .await
+        .expect("tools/list should succeed");
     assert_eq!(tools.len(), 1);
     assert_eq!(tools[0].name, "echo");
 

@@ -35,14 +35,20 @@ pub(crate) fn parse_ai21_response(body: &Value) -> Result<CompletionResponse, Co
     }
     let usage = TokenUsage {
         prompt_tokens: body["usage"]["prompt_tokens"].as_u64().unwrap_or_default() as u32,
-        completion_tokens: body["usage"]["completion_tokens"].as_u64().unwrap_or_default() as u32,
+        completion_tokens: body["usage"]["completion_tokens"]
+            .as_u64()
+            .unwrap_or_default() as u32,
         total_tokens: body["usage"]["total_tokens"].as_u64().unwrap_or_default() as u32,
     };
     let finish_reason = match choice["finish_reason"].as_str() {
         Some("length") => FinishReason::Length,
         _ => FinishReason::Stop,
     };
-    Ok(CompletionResponse { text, usage, finish_reason })
+    Ok(CompletionResponse {
+        text,
+        usage,
+        finish_reason,
+    })
 }
 
 fn ai21_message(message: &CompletionMessage) -> Result<Value, ConduitError> {

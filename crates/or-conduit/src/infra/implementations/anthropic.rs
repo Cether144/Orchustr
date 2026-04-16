@@ -5,7 +5,7 @@ use crate::infra::adapters::anthropic::{anthropic_payload, parse_anthropic_respo
 use crate::infra::http::{HttpConduit, required_env};
 use or_core::{RetryPolicy, TokenBudget};
 use reqwest::Client;
-use reqwest::header::{HeaderMap, HeaderValue, CONTENT_TYPE};
+use reqwest::header::{CONTENT_TYPE, HeaderMap, HeaderValue};
 use std::fmt;
 use std::time::Duration;
 
@@ -105,9 +105,19 @@ impl ConduitProvider for AnthropicConduit {
 }
 
 impl HttpConduit for AnthropicConduit {
-    fn base_url(&self) -> &str { &self.base_url }
-    fn client(&self) -> &Client { &self.http_client }
-    fn retry_policy(&self) -> &RetryPolicy { &self.retry_policy }
-    fn token_budget(&self) -> &TokenBudget { &self.token_budget }
-    fn timeout(&self) -> Duration { self.timeout }
+    fn base_url(&self) -> &str {
+        &self.base_url
+    }
+    fn client(&self) -> &Client {
+        &self.http_client
+    }
+    fn retry_policy(&self) -> &RetryPolicy {
+        &self.retry_policy
+    }
+    fn token_budget(&self) -> &TokenBudget {
+        &self.token_budget
+    }
+    fn timeout(&self) -> Duration {
+        self.timeout
+    }
 }

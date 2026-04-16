@@ -1,8 +1,8 @@
 use crate::domain::contracts::ConduitProvider;
 use crate::domain::entities::{CompletionMessage, CompletionResponse};
 use crate::domain::errors::ConduitError;
-use crate::infra::adapters::vertex::parse_vertex_response;
 use crate::infra::adapters::gemini::gemini_payload;
+use crate::infra::adapters::vertex::parse_vertex_response;
 use crate::infra::http::{bearer_headers, required_env};
 use or_core::{RetryPolicy, TokenBudget};
 use reqwest::Client;
@@ -48,7 +48,10 @@ impl VertexConduit {
             http_client: Client::new(),
             model: model.into(),
             retry_policy: RetryPolicy::default_llm(),
-            token_budget: TokenBudget { max_context_tokens: 1_000_000, max_completion_tokens: 8_192 },
+            token_budget: TokenBudget {
+                max_context_tokens: 1_000_000,
+                max_completion_tokens: 8_192,
+            },
             timeout: Duration::from_secs(60),
         })
     }
@@ -62,20 +65,36 @@ impl VertexConduit {
         )
     }
 
-    #[must_use] pub fn with_retry(mut self, p: RetryPolicy) -> Self { self.retry_policy = p; self }
-    #[must_use] pub fn with_budget(mut self, b: TokenBudget) -> Self { self.token_budget = b; self }
-    #[must_use] pub fn with_timeout(mut self, t: Duration) -> Self { self.timeout = t; self }
+    #[must_use]
+    pub fn with_retry(mut self, p: RetryPolicy) -> Self {
+        self.retry_policy = p;
+        self
+    }
+    #[must_use]
+    pub fn with_budget(mut self, b: TokenBudget) -> Self {
+        self.token_budget = b;
+        self
+    }
+    #[must_use]
+    pub fn with_timeout(mut self, t: Duration) -> Self {
+        self.timeout = t;
+        self
+    }
 }
 
 impl ConduitProvider for VertexConduit {
-    async fn complete_messages(&self, messages: Vec<CompletionMessage>) -> Result<CompletionResponse, ConduitError> {
+    async fn complete_messages(
+        &self,
+        messages: Vec<CompletionMessage>,
+    ) -> Result<CompletionResponse, ConduitError> {
         let payload = gemini_payload(&messages)?;
         let headers = bearer_headers(&self.access_token)?;
         let url = format!(
             "https://{}-aiplatform.googleapis.com/v1/projects/{}/locations/{}/publishers/google/models/{}:generateContent",
             self.location, self.project_id, self.location, self.model
         );
-        let response = self.http_client
+        let response = self
+            .http_client
             .post(&url)
             .headers(headers)
             .timeout(self.timeout)
@@ -87,7 +106,9 @@ impl ConduitProvider for VertexConduit {
             let body = response.text().await.unwrap_or_default();
             return Err(ConduitError::Api { status, body });
         }
-        let body: Value = response.json().await
+        let body: Value = response
+            .json()
+            .await
             .map_err(|e| ConduitError::Serialization(e.to_string()))?;
         parse_vertex_response(&body)
     }

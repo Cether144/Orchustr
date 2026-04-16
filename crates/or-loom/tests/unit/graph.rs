@@ -72,9 +72,7 @@ async fn invalid_branch_target_is_caught() {
         .add_node("start", |s: CountState| async move {
             NodeResult::branch(s, "nonexistent")
         })
-        .add_node("end", |s: CountState| async move {
-            NodeResult::advance(s)
-        })
+        .add_node("end", |s: CountState| async move { NodeResult::advance(s) })
         .add_edge("start", "end")
         .set_entry("start")
         .set_exit("end")
@@ -83,10 +81,7 @@ async fn invalid_branch_target_is_caught() {
     let result = LoomOrchestrator
         .execute_graph(&graph, CountState { steps: 0 })
         .await;
-    assert!(matches!(
-        result,
-        Err(LoomError::InvalidBranchTarget { .. })
-    ));
+    assert!(matches!(result, Err(LoomError::InvalidBranchTarget { .. })));
 }
 
 #[tokio::test]

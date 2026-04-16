@@ -30,10 +30,12 @@ pub(crate) fn parse_cohere_response(body: &Value) -> Result<CompletionResponse, 
             "Cohere response missing text".to_owned(),
         ));
     }
-    let input_tokens =
-        body["usage"]["billed_units"]["input_tokens"].as_u64().unwrap_or_default() as u32;
-    let output_tokens =
-        body["usage"]["billed_units"]["output_tokens"].as_u64().unwrap_or_default() as u32;
+    let input_tokens = body["usage"]["billed_units"]["input_tokens"]
+        .as_u64()
+        .unwrap_or_default() as u32;
+    let output_tokens = body["usage"]["billed_units"]["output_tokens"]
+        .as_u64()
+        .unwrap_or_default() as u32;
     let usage = TokenUsage {
         prompt_tokens: input_tokens,
         completion_tokens: output_tokens,
@@ -43,7 +45,11 @@ pub(crate) fn parse_cohere_response(body: &Value) -> Result<CompletionResponse, 
         Some("MAX_TOKENS") => FinishReason::Length,
         _ => FinishReason::Stop,
     };
-    Ok(CompletionResponse { text, usage, finish_reason })
+    Ok(CompletionResponse {
+        text,
+        usage,
+        finish_reason,
+    })
 }
 
 fn cohere_message(message: &CompletionMessage) -> Result<Value, ConduitError> {

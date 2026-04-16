@@ -51,10 +51,7 @@ fn parse_nested_schema_validates_inner_fields() {
     let parser = JsonParser::<NestedOutput>::new();
     // inner.value is missing — serde reports this as a deserialization error
     let result = SieveOrchestrator.parse_structured(&parser, r#"{"inner":{}}"#);
-    assert!(
-        result.is_err(),
-        "nested required field should be flagged"
-    );
+    assert!(result.is_err(), "nested required field should be flagged");
     let err_msg = format!("{:?}", result.unwrap_err());
     assert!(
         err_msg.contains("value"),
