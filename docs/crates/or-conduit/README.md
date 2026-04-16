@@ -9,7 +9,7 @@ Provider abstraction for text and multimodal completions. Supports 22 LLM provid
 ```mermaid
 graph LR
   OR_CORE[or-core] --> THIS[or-conduit]
-  THIS --> CALLERS[or-sentinel, or-colony]
+  THIS --> CALLERS[or-sentinel]
 ```
 
 ## Implementation Status

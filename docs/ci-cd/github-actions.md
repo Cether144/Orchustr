@@ -12,6 +12,7 @@ flowchart TD
   TRIGGER[push / pull_request] --> TEST[test matrix job]
   TRIGGER --> PY[bindings-python]
   TRIGGER --> TS[bindings-typescript]
+  TRIGGER --> DT[bindings-dart]
 ```
 
 ## Line-by-Line Annotated Workflow
@@ -37,6 +38,7 @@ jobs:
         with: { toolchain: "${{ matrix.rust }}", components: "clippy,rustfmt" }
       - uses: taiki-e/install-action@cargo-nextest          # Install nextest test runner
       - uses: taiki-e/install-action@cargo-llvm-cov         # Install coverage tool
+      - uses: taiki-e/install-action@cargo-deny             # Install dependency policy checker
       - run: cargo fmt --all -- --check                     # Enforce formatting
       - run: cargo clippy --all-targets --all-features -- -D warnings  # Enforce lint cleanliness
       - run: cargo deny check                               # Enforce advisory and license policy
@@ -50,6 +52,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master                 # Rust toolchain for maturin build
+        with: { toolchain: "1.87.0" }
       - uses: actions/setup-python@v5
         with: { python-version: "3.14.4" }                # CI Python version
       - run: pip install maturin pytest                     # Install build/test tooling
@@ -64,6 +68,20 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: "20" }                      # CI Node version
       - run: cd bindings/typescript && npm ci && npm run typecheck && npm test
+
+  # Dart package build, analysis, and tests
+  bindings-dart:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master                 # Rust toolchain for native bridge build
+        with: { toolchain: "1.87.0" }
+      - uses: dart-lang/setup-dart@v1                      # Install Dart SDK
+      - run: cd bindings/dart && dart pub get               # Resolve dependencies
+      - run: cd bindings/dart && dart format --output=none --set-exit-if-changed .  # Enforce formatting
+      - run: cd bindings/dart && dart analyze               # Static analysis
+      - run: cd bindings/dart && dart run tool/build_native.dart  # Build native Rust bridge
+      - run: cd bindings/dart && dart run test/bindings_test.dart  # Run Dart tests
 ```
 
 ## Triggers
@@ -95,4 +113,4 @@ jobs:
 
 ⚠️ Known Gaps & Limitations
 - The workflow does not publish Rust crates, Python packages, or npm packages.
-- Binding jobs are Linux-only, while the Rust matrix is cross-platform.
+- Binding jobs (Python, TypeScript, Dart) are Linux-only, while the Rust matrix is cross-platform.

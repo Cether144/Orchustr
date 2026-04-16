@@ -6,31 +6,37 @@
 
 ```mermaid
 graph TB
+  classDef gateway fill:#f7d774,stroke:#7a5d00,color:#111;
+
   PY[bindings/python] --> OR_BRIDGE[or-bridge]
   TS[bindings/typescript] --> OR_BRIDGE
-  classDef gateway fill:#f7d774,stroke:#7a5d00,color:#111;
   class OR_BRIDGE gateway;
-  OR_CORE[or-core]
+
+  OR_BRIDGE --> OR_BEACON[or-beacon]
+  OR_BRIDGE --> OR_CORE[or-core]
+
+  OR_ANCHOR[or-anchor] --> OR_CORE
+  OR_BEACON --> OR_CORE
+  OR_CHECKPOINT[or-checkpoint] --> OR_CORE
+  OR_COLONY[or-colony] --> OR_CORE
+  OR_COMPASS[or-compass] --> OR_CORE
+  OR_CONDUIT[or-conduit] --> OR_CORE
+  
+  OR_FORGE[or-forge] --> OR_MCP[or-mcp]
+  OR_MCP --> OR_CORE
+  
+  OR_LOOM[or-loom] --> OR_CORE
+  OR_PIPELINE[or-pipeline] --> OR_CORE
+  OR_RECALL[or-recall] --> OR_CORE
+  OR_RELAY[or-relay] --> OR_CORE
+  
+  OR_SENTINEL[or-sentinel] --> OR_CONDUIT
+  OR_SENTINEL --> OR_CORE
+  OR_SENTINEL --> OR_FORGE
+  OR_SENTINEL --> OR_LOOM
+  
   OR_SIEVE[or-sieve]
   OR_PRISM[or-prism]
-  OR_CORE --> OR_ANCHOR[or-anchor]
-  OR_CORE --> OR_BEACON[or-beacon]
-  OR_BEACON --> OR_BRIDGE
-  OR_CORE --> OR_BRIDGE
-  OR_CORE --> OR_CHECKPOINT[or-checkpoint]
-  OR_CORE --> OR_COLONY[or-colony]
-  OR_CORE --> OR_COMPASS[or-compass]
-  OR_CORE --> OR_CONDUIT[or-conduit]
-  OR_MCP[or-mcp] --> OR_FORGE[or-forge]
-  OR_CORE --> OR_LOOM[or-loom]
-  OR_CORE --> OR_MCP
-  OR_CORE --> OR_PIPELINE[or-pipeline]
-  OR_CORE --> OR_RECALL[or-recall]
-  OR_CORE --> OR_RELAY[or-relay]
-  OR_CONDUIT --> OR_SENTINEL[or-sentinel]
-  OR_CORE --> OR_SENTINEL
-  OR_FORGE --> OR_SENTINEL
-  OR_LOOM --> OR_SENTINEL
 ```
 
 ## External Dependencies per Internal Crate
@@ -44,7 +50,7 @@ graph TB
 | `or-checkpoint` | or-core | serde, serde_json, thiserror, tracing | `(none)` |
 | `or-colony` | or-core | serde, serde_json, thiserror, tracing | `(none)` |
 | `or-compass` | or-core | serde, thiserror, tracing | `(none)` |
-| `or-conduit` | or-core | futures, reqwest, serde, serde_json, thiserror, tokio, tracing | or-sentinel |
+| `or-conduit` | or-core | futures, futures-util, reqwest, reqwest-eventsource, serde, serde_json, thiserror, tokio, tracing | or-sentinel |
 | `or-forge` | or-mcp | schemars, serde, serde_json, thiserror, tracing | or-sentinel |
 | `or-loom` | or-core | serde, thiserror, tracing | or-sentinel |
 | `or-mcp` | or-core | reqwest, schemars, serde, serde_json, thiserror, tokio, tracing | or-forge |

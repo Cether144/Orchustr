@@ -62,9 +62,12 @@ Error type for provider operations.
 ```rust
 pub enum ConduitError {
     MissingEnvironmentVariable(String),
-    HttpError(String),
-    ProviderError(String),
-    BudgetExceeded { requested: usize, budget: usize },
+    InvalidRequest(String),
+    Http(String),
+    Api { status: u16, body: String },
+    BudgetExceeded { requested: u32, budget: u32 },
+    RateLimited { retry_after_ms: u64 },
+    Serialization(String),
     NotImplemented(String),
     Timeout,
     AuthenticationFailed(String),
