@@ -4,6 +4,11 @@ export class PromptBuilder {
 }
 
 export class GraphBuilder<T extends Record<string, unknown>> {
+  /**
+   * Note: The generic type `T` provides compile-time safety in TypeScript but
+   * is not enforced at runtime in JavaScript.  Node handler return types are
+   * not validated — runtime mismatches will surface as plain JS errors.
+   */
   addNode(name: string, handler: (state: T) => Promise<T> | T): GraphBuilder<T>;
   addEdge(source: string, target: string): GraphBuilder<T>;
   setEntry(name: string): GraphBuilder<T>;
@@ -27,9 +32,13 @@ export class NexusClient {
 export class OpenAiConduit {
   static fromEnv(): OpenAiConduit;
   completeText(prompt: string): Promise<{ text: string }>;
+  completeMessages(messages: Array<Record<string, unknown>>): Promise<{ text: string }>;
   streamText(prompt: string): AsyncIterable<string>;
 }
 
-export class AnthropicConduit extends OpenAiConduit {
+export class AnthropicConduit {
   static fromEnv(): AnthropicConduit;
+  completeText(prompt: string): Promise<{ text: string }>;
+  completeMessages(messages: Array<Record<string, unknown>>): Promise<{ text: string }>;
+  streamText(prompt: string): AsyncIterable<string>;
 }

@@ -52,3 +52,11 @@ path = "multimodal_completion.rs"
 [[test]]
 name = "regression"
 path = "regression.rs"
+
+[[test]]
+name = "agent_loop"
+path = "agent_loop.rs"
+
+[[test]]
+name = "live_openrouter"
+path = "live_openrouter.rs"

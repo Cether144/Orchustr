@@ -22,21 +22,23 @@ pub trait ConduitProvider: Send + Sync + 'static {
         .await
     }
 
+    /// Streams completion text chunk-by-chunk.
+    ///
+    /// # Default fallback
+    ///
+    /// The default implementation calls [`complete_messages`] and emits the
+    /// entire response as a **single chunk**. This is **not** true streaming
+    /// — providers **must** override this method to deliver incremental
+    /// Server-Sent-Event (SSE) chunks for a real streaming experience.
     async fn stream_text(
         &self,
         messages: Vec<CompletionMessage>,
     ) -> Result<TextStream, ConduitError> {
+        tracing::warn!(
+            "ConduitProvider::stream_text is using the non-streaming fallback. \
+             Override stream_text in your provider for true token-level streaming."
+        );
         let response = self.complete_messages(messages).await?;
-        let chunks = response
-            .text
-            .split_whitespace()
-            .map(ToOwned::to_owned)
-            .collect::<Vec<_>>();
-        let output = if chunks.is_empty() {
-            vec![String::new()]
-        } else {
-            chunks
-        };
-        Ok(Box::pin(stream::iter(output.into_iter().map(Ok))))
+        Ok(Box::pin(stream::iter(std::iter::once(Ok(response.text)))))
     }
 }

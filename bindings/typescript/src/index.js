@@ -10,7 +10,7 @@ export class PromptBuilder {
   }
 
   template(value) {
-    this._template = sanitize(value);
+    this._template = value; // preserve template as-is; sanitize values at render time
     return this;
   }
 
@@ -92,7 +92,10 @@ export class ForgeRegistry {
 
   async importFromMcp(client) {
     for (const tool of await client.listTools()) {
-      this.tools.set(tool.name, (args) => client.invokeTool(tool.name, args));
+      // Capture client reference explicitly to guard against later mutation
+      const boundClient = client;
+      const boundName = tool.name;
+      this.tools.set(tool.name, (args) => boundClient.invokeTool(boundName, args));
     }
     return this.tools.size;
   }
@@ -132,6 +135,31 @@ export class NexusClient {
   }
 }
 
+// ── Response text extraction ────────────────────────────────────────
+
+/**
+ * Extract text from either OpenAI Responses API (output) or
+ * Anthropic Messages API (content) response bodies.
+ */
+function _extractText(body) {
+  if (body.output) {
+    return body.output
+      .flatMap((block) => block.content ?? [])
+      .filter((item) => typeof item === "object" && item !== null)
+      .map((item) => item.text ?? "")
+      .join("");
+  }
+  if (body.content) {
+    return body.content
+      .filter((item) => typeof item === "object" && item !== null)
+      .map((item) => item.text ?? "")
+      .join("");
+  }
+  return "";
+}
+
+// ── Real LLM conduit implementations (Bugs 9-10 fix) ───────────────
+
 export class OpenAiConduit {
   static fromEnv() {
     return new OpenAiConduit(process.env.OPENAI_API_KEY, process.env.OPENAI_MODEL);
@@ -140,19 +168,96 @@ export class OpenAiConduit {
   constructor(apiKey, model) {
     this.apiKey = apiKey;
     this.model = model;
+    // Uses the OpenAI Responses API (not Chat Completions).
+    // Schema: input=[...], response has output=[{content:[{text:...}]}]
+    this.endpoint = "https://api.openai.com/v1/responses";
   }
 
   async completeText(prompt) {
-    return { text: prompt };
+    return this.completeMessages([
+      { role: "user", content: [{ type: "text", text: prompt }] },
+    ]);
   }
 
+  async completeMessages(messages) {
+    const response = await fetch(this.endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${this.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: this.model,
+        input: messages,
+        max_output_tokens: 1024,
+      }),
+    });
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`OpenAI API error: ${response.status} ${errorBody}`);
+    }
+    const body = await response.json();
+    return { text: _extractText(body) };
+  }
+
+  /**
+   * Non-streaming fallback — yields the full response as one chunk.
+   * Override for true SSE streaming.
+   */
   async *streamText(prompt) {
-    for (const chunk of prompt.split(/\s+/).filter(Boolean)) yield chunk;
+    const result = await this.completeText(prompt);
+    yield result.text;
   }
 }
 
-export class AnthropicConduit extends OpenAiConduit {
+export class AnthropicConduit {
   static fromEnv() {
-    return new AnthropicConduit(process.env.ANTHROPIC_API_KEY, process.env.ANTHROPIC_MODEL);
+    return new AnthropicConduit(
+      process.env.ANTHROPIC_API_KEY,
+      process.env.ANTHROPIC_MODEL,
+    );
+  }
+
+  constructor(apiKey, model) {
+    this.apiKey = apiKey;
+    this.model = model;
+    this.endpoint = "https://api.anthropic.com/v1/messages";
+  }
+
+  async completeText(prompt) {
+    return this.completeMessages([
+      { role: "user", content: [{ type: "text", text: prompt }] },
+    ]);
+  }
+
+  async completeMessages(messages) {
+    const response = await fetch(this.endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": this.apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: this.model,
+        messages,
+        max_tokens: 1024,
+      }),
+    });
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Anthropic API error: ${response.status} ${errorBody}`);
+    }
+    const body = await response.json();
+    return { text: _extractText(body) };
+  }
+
+  /**
+   * Non-streaming fallback — yields the full response as one chunk.
+   * Override for true SSE streaming.
+   */
+  async *streamText(prompt) {
+    const result = await this.completeText(prompt);
+    yield result.text;
   }
 }

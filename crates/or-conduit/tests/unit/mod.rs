@@ -140,12 +140,7 @@ async fn stream_text_yields_real_chunks() {
         .unwrap()
         .collect::<Vec<_>>()
         .await;
-    assert_eq!(
-        output,
-        vec![
-            Ok("stream".to_owned()),
-            Ok("this".to_owned()),
-            Ok("now".to_owned())
-        ]
-    );
+    // Bug 1 fix: fallback emits the complete text as a single chunk
+    // (not word-split), making it obvious this is not real streaming.
+    assert_eq!(output, vec![Ok("stream this now".to_owned())]);
 }

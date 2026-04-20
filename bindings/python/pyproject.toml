@@ -6,6 +6,7 @@ build-backend = "maturin"
 name = "orchustr"
 version = "0.1.0"
 requires-python = ">=3.10"
+dependencies = ["aiohttp>=3.9"]
 
 [tool.maturin]
 manifest-path = "../../crates/or-bridge/Cargo.toml"

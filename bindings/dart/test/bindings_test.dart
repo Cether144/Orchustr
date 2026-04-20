@@ -105,30 +105,36 @@ void _expect(bool condition, String message) {
 Future<({HttpServer server, Uri uri})> _startServer() async {
   final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
   unawaited(() async {
-    await for (final request in server) {
-      final body = jsonDecode(await utf8.decoder.bind(request).join())
-          as Map<String, Object?>;
-      final path = request.uri.path;
-      final responseBody = switch (path) {
-        "/openai" => <String, Object?>{
-            "output": <Object?>[
-              <String, Object?>{
-                "content": <Object?>[
-                  <String, Object?>{"text": "openai-ok"}
-                ],
-              },
-            ],
-          },
-        "/anthropic" => <String, Object?>{
-            "content": <Object?>[
-              <String, Object?>{"text": "anthropic-ok"}
-            ],
-          },
-        _ => _mcpResponse(body),
-      };
-      request.response.headers.contentType = ContentType.json;
-      request.response.write(jsonEncode(responseBody));
-      await request.response.close();
+    try {
+      await for (final request in server) {
+        final body = jsonDecode(await utf8.decoder.bind(request).join())
+            as Map<String, Object?>;
+        final path = request.uri.path;
+        final responseBody = switch (path) {
+          "/openai" => <String, Object?>{
+              "output": <Object?>[
+                <String, Object?>{
+                  "content": <Object?>[
+                    <String, Object?>{"text": "openai-ok"}
+                  ],
+                },
+              ],
+            },
+          "/anthropic" => <String, Object?>{
+              "content": <Object?>[
+                <String, Object?>{"text": "anthropic-ok"}
+              ],
+            },
+          _ => _mcpResponse(body),
+        };
+        request.response.headers.contentType = ContentType.json;
+        request.response.write(jsonEncode(responseBody));
+        await request.response.close();
+      }
+    } catch (error, stackTrace) {
+      stderr.writeln("TEST SERVER ERROR: $error");
+      stderr.writeln(stackTrace);
+      exitCode = 1;
     }
   }());
   return (

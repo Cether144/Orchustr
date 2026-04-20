@@ -1,3 +1,14 @@
+/// Native FFI bridge to the or-bridge Rust dynamic library.
+///
+/// ## Allocation contract
+///
+/// Strings flow across the FFI boundary in two directions:
+///
+/// * **Dart → Rust**: allocated with the system C allocator (`malloc`) and
+///   freed with the system `free` after the Rust call returns.
+/// * **Rust → Dart**: allocated by the Rust bridge (via `CString` / the Rust
+///   global allocator) and **must** be freed with `orchustr_bridge_free_string`
+///   (NOT the system `free`) to avoid heap corruption.
 import "dart:convert";
 import "dart:ffi";
 import "dart:io";
@@ -24,6 +35,8 @@ typedef _MallocNative = Pointer<Void> Function(IntPtr);
 typedef _MallocDart = Pointer<Void> Function(int);
 typedef _SystemFreeNative = Void Function(Pointer<Void>);
 typedef _SystemFreeDart = void Function(Pointer<Void>);
+typedef _StrlenNative = IntPtr Function(Pointer<Uint8>);
+typedef _StrlenDart = int Function(Pointer<Uint8>);
 
 String? _configuredLibraryPath;
 OrchustrNativeBridge? _cachedBridge;
@@ -120,6 +133,10 @@ final class OrchustrNativeBridge {
     }
   }
 
+  /// Reads a Rust-allocated C string and frees it using the **Rust** allocator.
+  ///
+  /// MUST use `_freeBridgeString` (Rust's free) — this string was allocated
+  /// by the Rust bridge via `CString::into_raw`, NOT by the system `malloc`.
   String _takeBridgeString(Pointer<Int8> pointer) {
     final text = _readCString(pointer.cast<Uint8>());
     _freeBridgeString(pointer);
@@ -132,6 +149,8 @@ final _MallocDart _malloc =
     _systemLibrary.lookupFunction<_MallocNative, _MallocDart>("malloc");
 final _SystemFreeDart _free =
     _systemLibrary.lookupFunction<_SystemFreeNative, _SystemFreeDart>("free");
+final _StrlenDart _strlen =
+    _systemLibrary.lookupFunction<_StrlenNative, _StrlenDart>("strlen");
 
 Iterable<String> _bridgeCandidates() sync* {
   final name = _bridgeFileName();
@@ -150,6 +169,10 @@ Iterable<String> _bridgeCandidates() sync* {
   yield "${Directory.current.path}${separator}..${separator}..${separator}target${separator}release${separator}$name";
 }
 
+/// Allocates a null-terminated UTF-8 C string using the system `malloc`.
+///
+/// The caller is responsible for freeing this with the system `free` (NOT
+/// the Rust bridge free function).
 Pointer<Int8> _allocateCString(String value) {
   final bytes = utf8.encode(value);
   final pointer = _malloc(bytes.length + 1).cast<Uint8>();
@@ -159,15 +182,17 @@ Pointer<Int8> _allocateCString(String value) {
   return pointer.cast<Int8>();
 }
 
+/// Reads a null-terminated C string using `strlen` + bulk `asTypedList`.
+///
+/// This is O(n) via two passes (strlen + copy) but avoids the overhead of
+/// per-byte Dart FFI pointer indexing, which is dramatically slower for
+/// large strings.
 String _readCString(Pointer<Uint8> pointer) {
-  final bytes = <int>[];
-  for (var index = 0; true; index += 1) {
-    final value = pointer[index];
-    if (value == 0) {
-      return utf8.decode(bytes);
-    }
-    bytes.add(value);
+  final length = _strlen(pointer);
+  if (length == 0) {
+    return "";
   }
+  return utf8.decode(pointer.asTypedList(length));
 }
 
 String _bridgeFileName() {

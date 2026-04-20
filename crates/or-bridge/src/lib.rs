@@ -1,3 +1,9 @@
+#[cfg(not(any(feature = "dart", feature = "node", feature = "python")))]
+compile_error!(
+    "or-bridge requires at least one FFI feature: `dart`, `node`, or `python`. \
+     Enable one in your Cargo.toml, e.g.: or-bridge = { features = [\"dart\"] }"
+);
+
 pub mod application;
 pub mod domain;
 pub mod infra;

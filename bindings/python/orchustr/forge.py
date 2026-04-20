@@ -12,8 +12,8 @@ class ForgeRegistry:
 
     async def import_from_mcp(self, client) -> int:
         for tool in await client.list_tools():
-            async def proxy(args, tool_name=tool["name"]):
-                return await client.invoke_tool(tool_name, args)
+            async def proxy(args, *, _tool_name=tool["name"], _client=client):
+                return await _client.invoke_tool(_tool_name, args)
             self._tools[tool["name"]] = proxy
         return len(self._tools)
 

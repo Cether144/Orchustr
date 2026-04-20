@@ -32,7 +32,7 @@ class PromptBuilder:
         self._template: str | None = None
 
     def template(self, template: str) -> "PromptBuilder":
-        self._template = _sanitize(template)
+        self._template = template  # preserve template as-is; sanitize values at render time
         return self
 
     def build(self) -> PromptTemplate:
