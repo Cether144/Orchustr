@@ -9,7 +9,7 @@
 | `or-checkpoint` | Pause/resume state serialization. | or-core | CheckpointGate, CheckpointRecord | 🟢 Complete |
 | `or-colony` | Multi-agent coordination and aggregation. | or-core | ColonyOrchestrator, ColonyAgentTrait, ColonyResult | 🟢 Complete |
 | `or-compass` | Predicate routing. | or-core | CompassRouterBuilder, CompassRouter, RouteSelection | 🟢 Complete |
-| `or-conduit` | LLM provider abstraction and adapters (22 providers). | or-core | ConduitProvider, OpenAiCompatConduit, AnthropicConduit, GeminiConduit, CohereConduit, AI21Conduit, HuggingFaceConduit, ReplicateConduit, AzureConduit, BedrockConduit, VertexConduit | 🟢 Complete |
+| `or-conduit` | LLM provider abstraction and adapters (19 providers). | or-core | ConduitProvider, OpenAiCompatConduit, AnthropicConduit, GeminiConduit, CohereConduit, AI21Conduit, HuggingFaceConduit, ReplicateConduit, AzureConduit, BedrockConduit, VertexConduit | 🟢 Complete |
 | `or-forge` | Async tool registry and MCP imports. | or-mcp | ForgeRegistry, ForgeTool | 🟢 Complete |
 | `or-loom` | Directed graph execution engine. | or-core | GraphBuilder, ExecutionGraph, NodeResult | 🟢 Complete |
 | `or-mcp` | MCP client, server, and transports. | or-core | NexusClient, NexusServer, StreamableHttpTransport | 🟡 Partial |

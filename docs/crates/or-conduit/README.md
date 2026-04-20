@@ -2,7 +2,7 @@
 
 **Status**: 🟢 Complete | **Version**: `0.1.1` | **Deps**: futures, reqwest, serde, serde_json, thiserror, tokio, tracing
 
-Provider abstraction for text and multimodal completions. Supports 22 LLM providers and aggregators with retry, token-budget enforcement, configurable timeouts, and key redaction.
+Provider abstraction for text and multimodal completions. Supports 19 LLM providers and aggregators with retry, token-budget enforcement, configurable timeouts, and key redaction.
 
 ## Position in the Workspace
 
@@ -17,7 +17,7 @@ graph LR
 | Component | Status | Notes |
 |---|---|---|
 | Message model | 🟢 | Structured multimodal messages and responses are implemented. |
-| Provider adapters | 🟢 | 22 providers: OpenAI, OpenRouter, Anthropic, Gemini, Cohere, AI21, HuggingFace, Replicate, Azure, Bedrock, Vertex, Together, Groq, Fireworks, DeepSeek, Mistral, xAI, Nvidia, Ollama. |
+| Provider adapters | 🟢 | 19 providers: OpenAI, OpenRouter, Anthropic, Gemini, Cohere, AI21, HuggingFace, Replicate, Azure, Bedrock, Vertex, Together, Groq, Fireworks, DeepSeek, Mistral, xAI, Nvidia, Ollama. |
 | Streaming | 🟡 | Default implementation chunks final text locally. Provider-native SSE not yet implemented. |
 | Security | 🟢 | API keys redacted in Debug, auth failure returns Result, configurable timeouts. |
 

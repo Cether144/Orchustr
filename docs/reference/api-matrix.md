@@ -26,7 +26,7 @@ The abstraction layer meant to route Prompts and chat completion instructions to
 |:---|:---|:---|:---:|:---:|:---:|:---:|
 | **`OpenAiCompatConduit`** | `complete_text(prompt)` | Sends a single raw string to OpenAI-compatible endpoints (OpenRouter, Groq, Together, Mistral, Ollama) and returns the text output. | 🟢 | 🟡 | 🟡 | 🟡 |
 | *(Any Conduit)* | `complete_messages(list)` | The lower-level API that accepts specific role arrays (System, User, Assistant) with Vision/Image contexts. Used internally by Agents. | 🟢 | 🟡 | 🟡 | 🟡 |
-| *(Any Conduit)* | `stream_text()` | Streams the response chunk-by-chunk for Real-time UX interactions or streaming web-apps. | 🟢 | 🔴 | 🟡 | 🔴 |
+| *(Any Conduit)* | `stream_text()` | Streams the response chunk-by-chunk for Real-time UX interactions or streaming web-apps. | 🟢 | 🟡 | 🟡 | 🟡 |
 | **`AnthropicConduit`** | `new(key, model)` | Bypasses the OpenAI standard mapping to handle Claude's unique requirement of placing System messages at the top-level rather than in the array. | 🟢 | 🟡 | 🟡 | 🟡 |
 
 ---
@@ -36,10 +36,10 @@ Gives your agents "hands" to manipulate files, run shell commands, fetch web pag
 
 | Struct / Class | Key Functions / Methods | Purpose & Usecase | Rust | Python | TS | Dart |
 |:---|:---|:---|:---:|:---:|:---:|:---:|
-| **`ForgeRegistry`** | `register_tool(name, fn)` | Registers local native language codes (like a Python script or JS function) so the LLM can trigger it. `or-forge`. | 🟢 | 🟡 | 🟡 | 🟡 |
+| **`ForgeRegistry`** | `register(name, fn)` | Registers local native language codes (like a Python script or JS function) so the LLM can trigger it. `or-forge`. | 🟢 | 🟡 | 🟡 | 🟡 |
 | **`ForgeRegistry`** | `invoke(name, args)` | Programmatically executes a registered tool via its JSON schema. `or-forge`. | 🟢 | 🟡 | 🟡 | 🟡 |
-| **`ForgeRegistry`** | `import_from_mcp(client)` | Imports remote tools from a local MCP server (like the Firebase or Desktop MCP servers) directly into the agent. `or-mcp`. | 🟢 | 🔴 | 🟡 | 🟡 |
-| **`NexusClient`** | `connect_http(url)` | Creates a bidirectional WebSocket/HTTP connection to a Model Context Protocol Server to discover remote tools. `or-mcp`. | 🟢 | 🔴 | 🟡 | 🟡 |
+| **`ForgeRegistry`** | `import_from_mcp(client)` | Imports remote tools from a local MCP server (like the Firebase or Desktop MCP servers) directly into the agent. `or-mcp`. | 🟢 | 🟡 | 🟡 | 🟡 |
+| **`NexusClient`** | `connect_http(url)` | Creates a bidirectional WebSocket/HTTP connection to a Model Context Protocol Server to discover remote tools. `or-mcp`. | 🟢 | 🟡 | 🟡 | 🟡 |
 | **`Sieve`** | `validate_json(schema)` | Validates that an LLM's returned JSON arguments exactly match the strict JSON Schema defined by your tool before executing it. `or-sieve`. | 🟢 | 🔴 | 🔴 | 🔴 |
 
 ---
@@ -73,7 +73,7 @@ If you don't want to build a graph from scratch, these pre-built templates do th
 
 | Struct / Class | Key Functions / Methods | Purpose & Usecase | Rust | Python | TS | Dart |
 |:---|:---|:---|:---:|:---:|:---:|:---:|
-| **`SentinelAgent`** | `new(planner, registry)`, `run(state)` | A pre-compiled ReAct-style graph that gives an LLM a Prompt, lets it call tools from a Registry, and loops back to itself until it solves the user's objective. | 🟢 | 🔴 | 🔴 | 🔴 |
+| **`SentinelAgent`** | `new(provider, registry)`, `run(state)` | A pre-compiled ReAct-style graph that gives an LLM a Prompt, lets it call tools from a Registry, and loops back to itself until it solves the user's objective. | 🟢 | 🔴 | 🔴 | 🔴 |
 | **`PlanExecuteAgent`** | `new(planner, registry)`, `run(state)` | A pre-compiled plan-and-execute pipeline: uses a fast LLM to decompose the user's goal into steps, then executes each step with a `SentinelAgent` worker. | 🟢 | 🔴 | 🔴 | 🔴 |
 
 ---

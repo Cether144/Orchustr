@@ -13,7 +13,7 @@ All notable changes to Orchustr should be documented in this file.
   - Dedicated conduit types for unique APIs: `GeminiConduit`, `CohereConduit`, `AI21Conduit`, `HuggingFaceConduit`, `ReplicateConduit`, `AzureConduit`, `BedrockConduit`, `VertexConduit`.
 - **New error variants** (`or-conduit`): `ConduitError::Timeout`, `ConduitError::AuthenticationFailed`.
 - **New error variant** (`or-loom`): `LoomError::NodeExecution` for labeled node failures.
-- **Documentation suite** refreshed under `/docs` to cover all 22 providers, plus an exhaustive cross-language `api-matrix.md`.
+- **Documentation suite** refreshed under `/docs` to cover all 19 providers, plus an exhaustive cross-language `api-matrix.md`.
 - **45+ new tests** across 7 crates covering provider construction, key redaction, payload guards, prompt injection, schema validation, graph execution, and routing edge cases.
 - **Live Integration Tests**: Added real end-to-end multi-turn memory and ReAct agent tests against live OpenRouter APIs for Rust, Python, TypeScript, and Dart.
 

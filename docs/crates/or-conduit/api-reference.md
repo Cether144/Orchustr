@@ -12,7 +12,7 @@ This page documents the main public surface re-exported by `or-conduit/src/lib.r
 | **File** | `domain/contracts.rs` |
 | **Status** | 🟢 |
 
-Async provider abstraction for message completion and streaming. All 22 providers implement this trait.
+Async provider abstraction for message completion and streaming. All 19 providers implement this trait.
 
 ```rust
 pub trait ConduitProvider: Send + Sync + 'static {
