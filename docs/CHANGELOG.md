@@ -13,8 +13,9 @@ All notable changes to Orchustr should be documented in this file.
   - Dedicated conduit types for unique APIs: `GeminiConduit`, `CohereConduit`, `AI21Conduit`, `HuggingFaceConduit`, `ReplicateConduit`, `AzureConduit`, `BedrockConduit`, `VertexConduit`.
 - **New error variants** (`or-conduit`): `ConduitError::Timeout`, `ConduitError::AuthenticationFailed`.
 - **New error variant** (`or-loom`): `LoomError::NodeExecution` for labeled node failures.
-- **Documentation suite** refreshed under `/docs` to cover all 22 providers.
+- **Documentation suite** refreshed under `/docs` to cover all 22 providers, plus an exhaustive cross-language `api-matrix.md`.
 - **45+ new tests** across 7 crates covering provider construction, key redaction, payload guards, prompt injection, schema validation, graph execution, and routing edge cases.
+- **Live Integration Tests**: Added real end-to-end multi-turn memory and ReAct agent tests against live OpenRouter APIs for Rust, Python, TypeScript, and Dart.
 
 ### Changed
 
@@ -22,6 +23,9 @@ All notable changes to Orchustr should be documented in this file.
 - **`or-conduit` HTTP layer**: `bearer_headers()` now returns `Result` instead of silently constructing headers with empty keys.
 - **`or-prism`**: Updated to `opentelemetry_sdk` 0.31 API (`SdkTracerProvider`, argument-less `with_batch_exporter`).
 - **Workspace**: Downgraded `schemars` from `1.x` to `0.8.22` to restore compatibility with `or-sieve` schema module.
+- **Crates.io Publishing**: Workspace path dependencies globally upgraded to strictly map versions/descriptions recursively for package publishing.
+- **Python Bindings**: Migrated inner conduits from blocking `urllib` to full async natively using `aiohttp`.
+- **TypeScript Bindings**: Replaced local-bridge fallback conduits with native asynchronous `fetch` calls.
 
 ### Fixed
 
@@ -31,6 +35,10 @@ All notable changes to Orchustr should be documented in this file.
 - **Reliability**: Added SQLite `WAL` mode and `busy_timeout(5000)` to `or-recall` to resolve concurrent access errors.
 - **Correctness**: Route names are now trimmed at insertion time in `or-compass`, preventing whitespace-based validation mismatches.
 - **Correctness**: `or-sentinel` support module now uses `LoomError::NodeExecution` instead of undefined error variants.
+- **Correctness**: Fixed Python `forge.py` closure capture using secure default keyword-args to prevent loop bleeding.
+- **Performance**: Upgraded Dart FFI memory allocations using `strlen` instead of slow byte-by-byte copies.
+- **Streaming**: Fixed `or-conduit` fallback pipeline breaking stream arrays by passing explicit continuous chunks backwards instead of splitting string whitespace.
+- **State Merging**: Replaced `OrchState::merge` silent no-ops with key-level deep merging for `DynState`.
 
 ## [0.1.1]
 
