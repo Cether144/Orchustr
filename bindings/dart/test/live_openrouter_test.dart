@@ -13,10 +13,10 @@ import "dart:io";
 
 import "package:orchustr/orchustr.dart";
 
-const _endpoint = "https://openrouter.ai/api/v1/chat/completions";
 const _model = "liquid/lfm-2.5-1.2b-instruct:free";
 
 late final String _apiKey;
+late final OpenAiCompatConduit _conduit;
 
 Future<void> main() async {
   _apiKey = Platform.environment["OPENROUTER_API_KEY"] ?? "";
@@ -24,6 +24,7 @@ Future<void> main() async {
     stdout.writeln("SKIP: OPENROUTER_API_KEY not set");
     return;
   }
+  _conduit = OpenAiCompatConduit.openrouter(_apiKey, _model);
 
   await _run("basic completion", _testBasicCompletion);
   await _run("multi-turn memory", _testMemoryMultiTurn);
@@ -221,37 +222,18 @@ Future<String> _chat(
 }) async {
   const maxAttempts = 4;
   for (var attempt = 1; attempt <= maxAttempts; attempt++) {
-    final client = HttpClient();
     try {
-      final request = await client.postUrl(Uri.parse(_endpoint));
-      request.headers.contentType = ContentType.json;
-      request.headers.set("Authorization", "Bearer $_apiKey");
-      request.write(jsonEncode(<String, Object?>{
-        "model": _model,
-        "messages": messages,
-        "max_tokens": maxTokens,
-      }));
-      final response =
-          await request.close().timeout(const Duration(seconds: 60));
-      final body = jsonDecode(await response.transform(utf8.decoder).join())
-          as Map<String, Object?>;
-      if (body.containsKey("error")) {
-        final error = body["error"];
-        if (error is Map && error["code"] == 429 && attempt < maxAttempts) {
-          final delay = Duration(seconds: 5 * (1 << (attempt - 1)));
-          stdout.writeln(
-              "  rate-limited, retrying in ${delay.inSeconds}s (attempt $attempt/$maxAttempts)...");
-          await Future<void>.delayed(delay);
-          continue;
-        }
-        throw StateError("OpenRouter error: $error");
+      final response = await _conduit.completeMessages(messages);
+      return response.text.trim();
+    } catch (e) {
+      if (e.toString().contains("429") && attempt < maxAttempts) {
+        final delay = Duration(seconds: 5 * (1 << (attempt - 1)));
+        stdout.writeln(
+            "  rate-limited, retrying in ${delay.inSeconds}s (attempt $attempt/$maxAttempts)...");
+        await Future<void>.delayed(delay);
+      } else {
+        rethrow;
       }
-      final choices = body["choices"] as List<Object?>;
-      final first = choices.first as Map<String, Object?>;
-      final message = first["message"] as Map<String, Object?>;
-      return (message["content"] as String).trim();
-    } finally {
-      client.close();
     }
   }
   throw StateError("exceeded max retry attempts");

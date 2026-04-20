@@ -56,7 +56,11 @@ abstract base class _HttpConduit {
     request.write(jsonEncode(payload));
     final response =
         await request.close().timeout(const Duration(seconds: 30));
-    final body = jsonDecode(await response.transform(utf8.decoder).join());
+    final bodyString = await response.transform(utf8.decoder).join();
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw StateError("HTTP ${response.statusCode}: $bodyString");
+    }
+    final body = jsonDecode(bodyString);
     if (body is! JsonObject) {
       throw StateError("completion response must be a JSON object");
     }

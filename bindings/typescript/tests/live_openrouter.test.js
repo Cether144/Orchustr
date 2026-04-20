@@ -11,9 +11,8 @@
  */
 import assert from "node:assert/strict";
 import http from "node:http";
-import { ForgeRegistry, NexusClient, PromptBuilder } from "../src/index.js";
+import { ForgeRegistry, NexusClient, OpenAiCompatConduit, PromptBuilder } from "../src/index.js";
 
-const ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
 const MODEL = "liquid/lfm-2.5-1.2b-instruct:free";
 const API_KEY = process.env.OPENROUTER_API_KEY ?? "";
 
@@ -22,26 +21,23 @@ if (!API_KEY) {
   process.exit(0);
 }
 
+const conduit = OpenAiCompatConduit.openrouter(API_KEY, MODEL);
+
 async function chat(messages, maxTokens = 128) {
   const maxAttempts = 4;
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    const response = await fetch(ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${API_KEY}`,
-      },
-      body: JSON.stringify({ model: MODEL, messages, max_tokens: maxTokens }),
-    });
-    const body = await response.json();
-    if (body.error?.code === 429 && attempt < maxAttempts) {
-      const delay = 5000 * Math.pow(2, attempt - 1); // 5s, 10s, 20s
-      console.log(`  rate-limited, retrying in ${delay / 1000}s (attempt ${attempt}/${maxAttempts})...`);
-      await new Promise((r) => setTimeout(r, delay));
-      continue;
+    try {
+      const result = await conduit.completeMessages(messages);
+      return result.text.trim();
+    } catch (e) {
+      if (e.message?.includes("429") && attempt < maxAttempts) {
+        const delay = 5000 * Math.pow(2, attempt - 1);
+        console.log(`  rate-limited, retrying in ${delay / 1000}s (attempt ${attempt}/${maxAttempts})...`);
+        await new Promise((r) => setTimeout(r, delay));
+      } else {
+        throw e;
+      }
     }
-    if (body.error) throw new Error(`OpenRouter error: ${JSON.stringify(body.error)}`);
-    return body.choices[0].message.content.trim();
   }
 }
 

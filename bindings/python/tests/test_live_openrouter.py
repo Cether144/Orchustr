@@ -18,39 +18,32 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from orchustr import ForgeRegistry, NexusClient, PromptBuilder
+from orchustr import ForgeRegistry, NexusClient, OpenAiCompatConduit, PromptBuilder
 
-ENDPOINT = "https://openrouter.ai/api/v1/chat/completions"
 MODEL = "liquid/lfm-2.5-1.2b-instruct:free"
 API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 
+_conduit: OpenAiCompatConduit | None = None
+
 
 async def _chat(messages: list[dict], max_tokens: int = 128) -> str:
-    """Send a chat completion request to OpenRouter with retry on 429."""
+    """Wrapper around OpenAiCompatConduit with retry on 429."""
     import aiohttp
 
+    assert _conduit is not None
     max_attempts = 4
     for attempt in range(1, max_attempts + 1):
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
-                ENDPOINT,
-                json={"model": MODEL, "messages": messages, "max_tokens": max_tokens},
-                headers={
-                    "Content-Type": "application/json",
-                    "Authorization": f"Bearer {API_KEY}",
-                },
-                timeout=aiohttp.ClientTimeout(total=60),
-            ) as response:
-                body = await response.json()
-
-        if body.get("error", {}).get("code") == 429 and attempt < max_attempts:
-            delay = 5 * (2 ** (attempt - 1))
-            print(f"  rate-limited, retrying in {delay}s (attempt {attempt}/{max_attempts})...")
-            await asyncio.sleep(delay)
-            continue
-        if "error" in body:
-            raise RuntimeError(f"OpenRouter error: {body['error']}")
-        return body["choices"][0]["message"]["content"].strip()
+        try:
+            response = await _conduit.complete_messages(messages)
+            return response.text.strip()
+        except aiohttp.ClientResponseError as e:
+            if e.status == 429 and attempt < max_attempts:
+                delay = 5 * (2 ** (attempt - 1))
+                print(f"  rate-limited, retrying in {delay}s (attempt {attempt}/{max_attempts})...")
+                await asyncio.sleep(delay)
+            else:
+                raise
+    raise RuntimeError("exceeded max retry attempts")
 
 
 # ── Test 1: Basic completion ─────────────────────────────────────────
@@ -190,6 +183,7 @@ async def test_mcp_forge_round_trip():
 # ── Main ─────────────────────────────────────────────────────────────
 
 async def main():
+    global _conduit
     if not API_KEY:
         print("SKIP: OPENROUTER_API_KEY not set")
         return
@@ -200,6 +194,7 @@ async def main():
         print("SKIP: aiohttp not installed")
         return
 
+    _conduit = OpenAiCompatConduit.openrouter(API_KEY, MODEL)
     await test_basic_completion()
     await test_memory_multi_turn()
     await test_tool_call_agent()
