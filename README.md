@@ -26,7 +26,7 @@
 
 Orchustr brings systems-level reliability to AI. Unlike dynamic frameworks (like LangChain or LangGraph) where complex agent loops often fail at runtime due to dictionary errors, Orchustr combines **strict compile-time type safety** with massive **async concurrency** to build production-grade agent pipelines. 
 
-With 22 native LLM providers packed in, built-in graph state machines, deterministic multi-agent routing, and cross-language support for Python, TypeScript, and Dart, Orchustr is built to never hang or crash in production.
+With 19 native LLM providers packed in, built-in graph state machines, deterministic multi-agent routing, and cross-language support for Python, TypeScript, and Dart, Orchustr is built to never hang or crash in production.
 
 - 🛡️ **Predictable State:** Pure Rust trait boundaries ensure state transitions are verified at compile time.
 - 🚀 **Blazing Fast:** Tokio-based runtime handles parallel agent routing, network requests, and heavy branch fan-outs with near-zero scheduling overhead.
