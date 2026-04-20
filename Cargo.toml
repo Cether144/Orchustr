@@ -25,6 +25,7 @@ resolver = "3"
 authors = ["Rainer Lacanlale -REL"]
 edition = "2024"
 license = "MIT OR Apache-2.0"
+description = "Orchustr is a multi-language agentic AI orchestration framework."
 rust-version = "1.87.0"
 version = "0.1.1"
 

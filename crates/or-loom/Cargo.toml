@@ -1,21 +1,22 @@
 [package]
 authors.workspace = true
 edition.workspace = true
+description.workspace = true
 license.workspace = true
 name = "or-loom"
 rust-version.workspace = true
 version.workspace = true
 
 [dependencies]
-or-core = { path = "../or-core" }
+or-core = { path = "../or-core", version = "0.1.1" }
 serde.workspace = true
 thiserror.workspace = true
 tracing.workspace = true
 
 [dev-dependencies]
 futures.workspace = true
-or-checkpoint = { path = "../or-checkpoint" }
-or-core = { path = "../or-core" }
+or-checkpoint = { path = "../or-checkpoint", version = "0.1.1" }
+or-core = { path = "../or-core", version = "0.1.1" }
 serde.workspace = true
 serde_json.workspace = true
 tokio.workspace = true

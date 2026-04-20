@@ -1,16 +1,17 @@
 [package]
 authors.workspace = true
 edition.workspace = true
+description.workspace = true
 license.workspace = true
 name = "or-sentinel"
 rust-version.workspace = true
 version.workspace = true
 
 [dependencies]
-or-conduit = { path = "../or-conduit" }
-or-core = { path = "../or-core" }
-or-forge = { path = "../or-forge" }
-or-loom = { path = "../or-loom" }
+or-conduit = { path = "../or-conduit", version = "0.1.1" }
+or-core = { path = "../or-core", version = "0.1.1" }
+or-forge = { path = "../or-forge", version = "0.1.1" }
+or-loom = { path = "../or-loom", version = "0.1.1" }
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
@@ -19,6 +20,6 @@ tracing.workspace = true
 
 [dev-dependencies]
 mockall.workspace = true
-or-mcp = { path = "../or-mcp" }
+or-mcp = { path = "../or-mcp", version = "0.1.1" }
 schemars.workspace = true
 tokio.workspace = true

@@ -1,6 +1,7 @@
 [package]
 authors.workspace = true
 edition.workspace = true
+description.workspace = true
 license.workspace = true
 name = "or-bridge"
 rust-version.workspace = true
@@ -16,8 +17,8 @@ node = ["dep:napi", "dep:napi-derive"]
 dart = []
 
 [dependencies]
-or-beacon = { path = "../or-beacon" }
-or-core = { path = "../or-core" }
+or-beacon = { path = "../or-beacon", version = "0.1.1" }
+or-core = { path = "../or-core", version = "0.1.1" }
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true

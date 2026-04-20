@@ -1,13 +1,14 @@
 [package]
 authors.workspace = true
 edition.workspace = true
+description.workspace = true
 license.workspace = true
 name = "or-anchor"
 rust-version.workspace = true
 version.workspace = true
 
 [dependencies]
-or-core = { path = "../or-core" }
+or-core = { path = "../or-core", version = "0.1.1" }
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
