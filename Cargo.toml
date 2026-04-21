@@ -17,6 +17,15 @@ members = [
     "crates/or-colony",
     "crates/or-prism",
     "crates/or-bridge",
+    "crates/tools/or-tools-core",
+    "crates/tools/or-tools-search",
+    "crates/tools/or-tools-web",
+    "crates/tools/or-tools-vector",
+    "crates/tools/or-tools-loaders",
+    "crates/tools/or-tools-exec",
+    "crates/tools/or-tools-file",
+    "crates/tools/or-tools-comms",
+    "crates/tools/or-tools-productivity",
     "tests/integration",
 ]
 resolver = "3"
@@ -45,3 +54,7 @@ opentelemetry = "0.31.0"
 opentelemetry_sdk = { version = "0.31.0", features = ["rt-tokio", "trace"] }
 opentelemetry-otlp = { version = "0.31.1", features = ["http-proto", "reqwest-client", "trace"] }
 tracing-opentelemetry = "0.32.1"
+async-trait = "0.1.83"
+url = "2.5.4"
+base64 = "0.22.1"
+uuid = { version = "1.11.0", features = ["v4", "serde"] }
