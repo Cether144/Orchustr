@@ -1,3 +1,16 @@
+#![cfg_attr(
+    not(any(
+        feature = "tavily",
+        feature = "exa",
+        feature = "brave",
+        feature = "serper",
+        feature = "searxng",
+        feature = "youcom",
+        feature = "bing"
+    )),
+    allow(dead_code)
+)]
+
 use crate::domain::errors::SearchError;
 use reqwest::Response;
 use url::Url;

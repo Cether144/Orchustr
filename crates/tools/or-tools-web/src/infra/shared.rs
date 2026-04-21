@@ -1,3 +1,14 @@
+#![cfg_attr(
+    not(any(
+        feature = "playwright",
+        feature = "brightdata",
+        feature = "hyperbrowser",
+        feature = "agentql",
+        feature = "oxylabs"
+    )),
+    allow(dead_code)
+)]
+
 use crate::domain::entities::HttpMethod;
 use crate::domain::errors::WebError;
 use reqwest::Response;

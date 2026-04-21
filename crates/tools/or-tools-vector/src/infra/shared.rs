@@ -1,3 +1,15 @@
+#![cfg_attr(
+    not(any(
+        feature = "pinecone",
+        feature = "weaviate",
+        feature = "qdrant",
+        feature = "chroma",
+        feature = "milvus",
+        feature = "pgvector"
+    )),
+    allow(dead_code)
+)]
+
 use crate::domain::errors::VectorError;
 use reqwest::Response;
 
