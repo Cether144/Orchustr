@@ -40,6 +40,14 @@ All notable changes to Orchustr should be documented in this file.
 - **Streaming**: Fixed `or-conduit` fallback pipeline breaking stream arrays by passing explicit continuous chunks backwards instead of splitting string whitespace.
 - **State Merging**: Replaced `OrchState::merge` silent no-ops with key-level deep merging for `DynState`.
 
+## [0.1.2]
+
+### Changed
+
+- Aligned the Rust workspace, internal path dependency versions, language binding package versions, and docs references on `0.1.2`.
+- Expanded the `or-tools-*` documentation set so each tool crate explains its purpose, responsibilities, and boundaries in warmer plain language before diving into API and internals detail.
+- Fixed the root workspace manifest version line so `Cargo.toml` remains valid TOML while carrying the new version.
+
 ## [0.1.1]
 
 ### Added

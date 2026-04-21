@@ -17,7 +17,7 @@ Rust gives the workspace strong ownership semantics for state flow, explicit con
 
 ## Multi-Language Support
 
-- **Rust**: full runtime surface across 17 crates.
+- **Rust**: full runtime surface across 26 crates.
 - **Python**: package `orchustr` with optional PyO3 helpers and pure-Python facades.
 - **TypeScript**: package `@orchustr/core` with a pure JS runtime facade and declaration file.
 - **Dart**: package `orchustr` with a pure Dart facade and optional `dart:ffi` bridge helpers.
@@ -41,6 +41,15 @@ Rust gives the workspace strong ownership semantics for state flow, explicit con
 - `or-relay`: parallel branch execution.
 - `or-sentinel`: agent runtime and plan/execute loop.
 - `or-sieve`: structured-output and text parsing.
+- `or-tools-core`: shared tool traits, registry, metadata, dispatcher, and tool errors.
+- `or-tools-search`: feature-gated web search providers and fallback search orchestration.
+- `or-tools-web`: browser fetch and scraping backends with URL validation.
+- `or-tools-vector`: feature-gated vector store clients and RAG-oriented operations.
+- `or-tools-loaders`: document loaders for text, markdown, JSON, CSV, HTML, and PDF.
+- `or-tools-exec`: local and remote code execution backends.
+- `or-tools-file`: local file operations plus JSON, Drive, ArXiv, and financial data backends.
+- `or-tools-comms`: outbound messaging backends for SMS and chat platforms.
+- `or-tools-productivity`: productivity clients for email, calendar, tracking, knowledge, and messaging.
 
 ## Build From Source
 
@@ -106,6 +115,15 @@ See [Bindings Overview](./bindings/overview.md), [Python README](./bindings/pyth
 - [or-relay README](./crates/or-relay/README.md), [api-reference](./crates/or-relay/api-reference.md), [internals](./crates/or-relay/internals.md)
 - [or-sentinel README](./crates/or-sentinel/README.md), [api-reference](./crates/or-sentinel/api-reference.md), [internals](./crates/or-sentinel/internals.md)
 - [or-sieve README](./crates/or-sieve/README.md), [api-reference](./crates/or-sieve/api-reference.md), [internals](./crates/or-sieve/internals.md)
+- [or-tools-core README](./crates/or-tools-core/README.md), [api-reference](./crates/or-tools-core/api-reference.md), [internals](./crates/or-tools-core/internals.md)
+- [or-tools-search README](./crates/or-tools-search/README.md), [api-reference](./crates/or-tools-search/api-reference.md), [internals](./crates/or-tools-search/internals.md)
+- [or-tools-web README](./crates/or-tools-web/README.md), [api-reference](./crates/or-tools-web/api-reference.md), [internals](./crates/or-tools-web/internals.md)
+- [or-tools-vector README](./crates/or-tools-vector/README.md), [api-reference](./crates/or-tools-vector/api-reference.md), [internals](./crates/or-tools-vector/internals.md)
+- [or-tools-loaders README](./crates/or-tools-loaders/README.md), [api-reference](./crates/or-tools-loaders/api-reference.md), [internals](./crates/or-tools-loaders/internals.md)
+- [or-tools-exec README](./crates/or-tools-exec/README.md), [api-reference](./crates/or-tools-exec/api-reference.md), [internals](./crates/or-tools-exec/internals.md)
+- [or-tools-file README](./crates/or-tools-file/README.md), [api-reference](./crates/or-tools-file/api-reference.md), [internals](./crates/or-tools-file/internals.md)
+- [or-tools-comms README](./crates/or-tools-comms/README.md), [api-reference](./crates/or-tools-comms/api-reference.md), [internals](./crates/or-tools-comms/internals.md)
+- [or-tools-productivity README](./crates/or-tools-productivity/README.md), [api-reference](./crates/or-tools-productivity/api-reference.md), [internals](./crates/or-tools-productivity/internals.md)
 
 ### Bindings
 

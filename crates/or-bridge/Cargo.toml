@@ -17,8 +17,8 @@ node = ["dep:napi", "dep:napi-derive"]
 dart = []
 
 [dependencies]
-or-beacon = { path = "../or-beacon", version = "0.1.1" }
-or-core = { path = "../or-core", version = "0.1.1" }
+or-beacon = { path = "../or-beacon", version = "0.1.2" }
+or-core = { path = "../or-core", version = "0.1.2" }
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true

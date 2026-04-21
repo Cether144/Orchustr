@@ -55,8 +55,8 @@ Once cloned, you link it into your existing project using a path reference. Repl
 **Option A — crates.io (recommended if you only need `or-core` / `or-prism`):**
 ```toml
 [dependencies]
-or-core  = "0.1.1"
-or-prism = "0.1.1"
+or-core  = "0.1.2"
+or-prism = "0.1.2"
 ```
 
 **Option B — local path (required for all other crates, or if you cloned the repo):**
