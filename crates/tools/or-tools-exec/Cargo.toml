@@ -1,0 +1,31 @@
+[package]
+authors.workspace = true
+edition.workspace = true
+description.workspace = true
+license.workspace = true
+name = "or-tools-exec"
+rust-version.workspace = true
+version.workspace = true
+
+[features]
+default = ["python", "shell"]
+python = []
+shell = []
+e2b = []
+bearly = []
+daytona = []
+all = ["python", "shell", "e2b", "bearly", "daytona"]
+
+[dependencies]
+or-tools-core = { path = "../or-tools-core", version = "0.1.1" }
+async-trait.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio = { workspace = true, features = ["process", "io-util", "time", "macros", "rt-multi-thread"] }
+tracing.workspace = true
+
+[dev-dependencies]
+mockall.workspace = true
+tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }
