@@ -1,7 +1,7 @@
 [package]
 authors.workspace = true
 edition.workspace = true
-description.workspace = true
+description = "Document chunking and in-memory retrieval (RAG) pipeline for Orchustr."
 license.workspace = true
 name = "or-anchor"
 rust-version.workspace = true

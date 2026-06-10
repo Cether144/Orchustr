@@ -4,6 +4,13 @@
 
 Command-line scaffolding and validation crate for Orchustr projects.
 
+> **Note**: the official `orchustr` CLI now lives in [`cli/`](../../../cli) and is
+> written in Go — it ships the same commands plus `doctor`, defaults paths to the
+> current directory, and generates templates that build outside this repository.
+> This Rust crate remains the home of `orchustr trace` (it hosts the `or-lens`
+> dashboard in-process; the Go CLI delegates to it) and of the library API
+> (`init_project`, `lint_path`, ...) used by other crates.
+
 ## Position in the Workspace
 
 ```mermaid

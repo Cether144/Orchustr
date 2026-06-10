@@ -1,0 +1,17 @@
+use or_schema::GraphSpec;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let raw = std::fs::read_to_string("graph.yaml")?;
+    let graph = GraphSpec::from_yaml(&raw)?;
+    println!(
+        "{{project_name}}: loaded graph '{}' ({} nodes, entry '{}')",
+        graph.name,
+        graph.nodes.len(),
+        graph.entry
+    );
+    // Next step: register handlers for each node id in `src/nodes/` and wire
+    // them into an or-loom GraphBuilder. See the Orchustr docs for a full
+    // walkthrough: {{repo_url}}/tree/main/docs/guides/building-your-first-agent.md
+    Ok(())
+}

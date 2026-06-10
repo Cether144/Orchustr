@@ -1,0 +1,9 @@
+[package]
+name = "{{project_name}}"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+# Pulled from the Orchustr monorepo until the crates are published to crates.io.
+or-schema = { git = "{{repo_url}}", features = ["yaml"] }

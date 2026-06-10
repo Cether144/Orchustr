@@ -1,7 +1,7 @@
 [package]
 authors.workspace = true
 edition.workspace = true
-description.workspace = true
+description = "LLM provider abstraction for Orchustr with adapters for Anthropic, OpenAI, Gemini, and more."
 license.workspace = true
 name = "or-conduit"
 rust-version.workspace = true

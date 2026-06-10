@@ -1,7 +1,7 @@
 [package]
 authors.workspace = true
 edition.workspace = true
-description.workspace = true
+description = "Local and sandboxed remote code execution tools for Orchustr."
 license.workspace = true
 name = "or-tools-exec"
 rust-version.workspace = true

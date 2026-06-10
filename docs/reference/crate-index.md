@@ -13,7 +13,7 @@
 | `or-forge` | Async tool registry and MCP imports, including bulk MCP discovery adapters. | or-mcp | ForgeRegistry, ForgeTool, ImportSummary | Complete |
 | `or-loom` | Directed graph execution engine with inspection and optional schema compilation support. | or-core, or-schema(feature=`serde`) | GraphBuilder, ExecutionGraph, NodeResult, GraphInspection, NodeRegistry(feature=`serde`) | Complete |
 | `or-schema` | Serializable graph descriptors and JSON/YAML loading helpers. | `(none)` | GraphSpec, NodeSpec, EdgeSpec, SchemaError | Complete |
-| `or-mcp` | MCP client, server, transports, and additive multi-server discovery helpers. | or-core | NexusClient, NexusServer, StreamableHttpTransport, MultiMcpClient, McpServerConfig, known_servers | Partial |
+| `or-mcp` | MCP client, server, transports, and additive multi-server discovery helpers. | or-core | NexusClient (alias McpClient), NexusServer (alias McpServer), StreamableHttpTransport, MultiMcpClient, McpServerConfig, known_servers | Partial |
 | `or-pipeline` | Sequential state pipeline runtime. | or-core | PipelineBuilder, Pipeline | Complete |
 | `or-prism` | Observability bootstrap and optional local dashboard bridge. | or-lens(feature=`lens`) | install_global_subscriber, PrismConfig, init_with_dashboard(feature=`lens`) | Partial |
 | `or-lens` | Optional local execution dashboard and in-process trace collection. | `(none)` | LensHandle, LensLayer, SpanCollector, ExecutionSnapshot | Partial |

@@ -1,7 +1,7 @@
 [package]
 authors.workspace = true
 edition.workspace = true
-description.workspace = true
+description = "Shared tool traits, registry, and dispatcher for the Orchustr tool crates."
 license.workspace = true
 name = "or-tools-core"
 rust-version.workspace = true

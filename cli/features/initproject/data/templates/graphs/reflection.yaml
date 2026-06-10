@@ -1,0 +1,19 @@
+name: reflection-agent
+version: "0.1.0"
+entry: draft
+exits: [accept]
+nodes:
+  - id: draft
+    handler: nodes::draft
+    metadata: {}
+  - id: critique
+    handler: nodes::critique
+    metadata: {}
+  - id: accept
+    handler: nodes::accept
+    metadata: {}
+edges:
+  - from: draft
+    to: critique
+  - from: critique
+    to: accept

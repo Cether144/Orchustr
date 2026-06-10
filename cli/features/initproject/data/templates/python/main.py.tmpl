@@ -1,0 +1,16 @@
+"""{{project_name}} entrypoint. Run with `orchustr run .` or `python main.py`."""
+
+import asyncio
+
+from nodes import PIPELINE
+
+
+async def main() -> None:
+    state: dict = {"input": "hello from {{project_name}}"}
+    for node in PIPELINE:
+        state = await node(state)
+    print("{{project_name}} finished:", state)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

@@ -1,7 +1,7 @@
 [package]
 authors.workspace = true
 edition.workspace = true
-description.workspace = true
+description = "Rust CLI for scaffolding, linting, running, and tracing Orchustr projects."
 license.workspace = true
 name = "or-cli"
 rust-version.workspace = true

@@ -1,0 +1,12 @@
+"""Smoke tests for the generated {{project_name}} agent."""
+
+import asyncio
+
+from nodes import PIPELINE
+
+
+def test_pipeline_preserves_state():
+    state = {"input": "test"}
+    for node in PIPELINE:
+        state = asyncio.run(node(state))
+    assert state["input"] == "test"

@@ -1,7 +1,7 @@
 [package]
 authors.workspace = true
 edition.workspace = true
-description.workspace = true
+description = "Serializable graph descriptors (YAML/JSON) shared by Orchustr runtimes and tooling."
 license.workspace = true
 name = "or-schema"
 rust-version.workspace = true

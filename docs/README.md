@@ -4,10 +4,10 @@
 </div>
 
 <p align="center">
-  <a href="https://github.com/Cether144/Orchustr/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Cether144/Orchustr/ci.yml?branch=main&label=Rust%20CI" alt="Rust CI" /></a>
-  <a href="https://github.com/Cether144/Orchustr/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Cether144/Orchustr/ci.yml?branch=main&label=Python%20Bindings" alt="Python Bindings CI" /></a>
-  <a href="https://github.com/Cether144/Orchustr/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Cether144/Orchustr/ci.yml?branch=main&label=TypeScript%20Bindings" alt="TypeScript Bindings CI" /></a>
-  <a href="https://github.com/Cether144/Orchustr/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Cether144/Orchustr/ci.yml?branch=main&label=Dart%20Bindings" alt="Dart Bindings CI" /></a>
+  <a href="https://github.com/Regent33/Orchustr/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Regent33/Orchustr/ci.yml?branch=main&label=Rust%20CI" alt="Rust CI" /></a>
+  <a href="https://github.com/Regent33/Orchustr/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Regent33/Orchustr/ci.yml?branch=main&label=Python%20Bindings" alt="Python Bindings CI" /></a>
+  <a href="https://github.com/Regent33/Orchustr/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Regent33/Orchustr/ci.yml?branch=main&label=TypeScript%20Bindings" alt="TypeScript Bindings CI" /></a>
+  <a href="https://github.com/Regent33/Orchustr/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Regent33/Orchustr/ci.yml?branch=main&label=Dart%20Bindings" alt="Dart Bindings CI" /></a>
   <img src="https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-4b5563" alt="License" />
 </p>
 

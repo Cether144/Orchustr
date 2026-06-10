@@ -1,7 +1,7 @@
 [package]
 authors.workspace = true
 edition.workspace = true
-description.workspace = true
+description = "Core contracts for Orchustr: state traits, retry policies, token budgets, and in-memory persistence."
 license.workspace = true
 name = "or-core"
 rust-version.workspace = true

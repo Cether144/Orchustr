@@ -126,3 +126,63 @@ fn collector_caps_total_traces_and_evicts_least_recent() {
     assert!(ids.contains(&"trace-b".to_owned()));
     assert!(ids.contains(&"trace-c".to_owned()));
 }
+
+#[tokio::test]
+async fn ingest_endpoint_accepts_single_span_and_batch() {
+    let collector = SpanCollector::new();
+    let handle = start_dashboard_server_with_collector(collector.clone(), 0)
+        .await
+        .expect("dashboard server should start");
+    tokio::time::sleep(Duration::from_millis(50)).await;
+    let url = format!("http://127.0.0.1:{}/api/spans", handle.port());
+    let client = reqwest::Client::new();
+
+    let single = client
+        .post(&url)
+        .json(&sample_span("think", 10))
+        .send()
+        .await
+        .expect("single-span post should succeed");
+    assert_eq!(single.status().as_u16(), 202);
+
+    let batch = client
+        .post(&url)
+        .json(&vec![sample_span("act", 20), sample_span("done", 30)])
+        .send()
+        .await
+        .expect("batch post should succeed");
+    assert_eq!(batch.status().as_u16(), 202);
+    let body: serde_json::Value = batch.json().await.expect("body should decode");
+    assert_eq!(body["accepted"], 2);
+
+    handle.shutdown();
+
+    let stored = collector.trace("trace-1").expect("trace should exist");
+    assert_eq!(stored.len(), 3, "all three ingested spans should be stored");
+}
+
+#[tokio::test]
+async fn ingest_endpoint_rejects_spans_without_ids() {
+    let collector = SpanCollector::new();
+    let handle = start_dashboard_server_with_collector(collector.clone(), 0)
+        .await
+        .expect("dashboard server should start");
+    tokio::time::sleep(Duration::from_millis(50)).await;
+    let url = format!("http://127.0.0.1:{}/api/spans", handle.port());
+
+    let mut bad = sample_span("think", 10);
+    bad.trace_id = String::new();
+    let response = reqwest::Client::new()
+        .post(&url)
+        .json(&bad)
+        .send()
+        .await
+        .expect("post should complete");
+    assert_eq!(response.status().as_u16(), 422);
+
+    handle.shutdown();
+    assert!(
+        collector.traces().is_empty(),
+        "invalid spans must not be stored"
+    );
+}

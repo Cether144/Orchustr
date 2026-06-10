@@ -1,0 +1,19 @@
+name: plan-execute-agent
+version: "0.1.0"
+entry: plan
+exits: [done]
+nodes:
+  - id: plan
+    handler: nodes::plan
+    metadata: {}
+  - id: execute_step
+    handler: nodes::execute_step
+    metadata: {}
+  - id: done
+    handler: nodes::done
+    metadata: {}
+edges:
+  - from: plan
+    to: execute_step
+  - from: execute_step
+    to: done

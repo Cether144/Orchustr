@@ -1,7 +1,7 @@
 [package]
 authors.workspace = true
 edition.workspace = true
-description.workspace = true
+description = "Async tool registry with schema-described tools and MCP imports for Orchustr agents."
 license.workspace = true
 name = "or-forge"
 rust-version.workspace = true

@@ -1,7 +1,7 @@
 [package]
 authors.workspace = true
 edition.workspace = true
-description.workspace = true
+description = "Short-term, long-term, and episodic memory stores for Orchustr agents."
 license.workspace = true
 name = "or-recall"
 rust-version.workspace = true

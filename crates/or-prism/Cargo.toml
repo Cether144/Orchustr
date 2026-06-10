@@ -1,7 +1,7 @@
 [package]
 authors.workspace = true
 edition.workspace = true
-description.workspace = true
+description = "Observability bootstrap for Orchustr: tracing subscriber and OTLP export."
 license.workspace = true
 name = "or-prism"
 rust-version.workspace = true

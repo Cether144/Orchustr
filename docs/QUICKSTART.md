@@ -16,7 +16,7 @@ Install what you need for your target workflow:
 ## Step 2: Clone the Repository
 
 ```bash
-git clone https://github.com/Cether144/Orchustr.git
+git clone https://github.com/Regent33/Orchustr.git
 cd Orchustr
 ```
 
@@ -27,15 +27,22 @@ cargo check --all-features
 cargo test --all-features
 ```
 
-## Step 4: Use the New CLI Scaffold
+## Step 4: Use the CLI
 
-The current repository includes the `orchustr` CLI in `or-cli`:
+The official `orchustr` CLI is a Go binary in [`cli/`](../cli) (Go `1.26+` to
+build; no Go needed to use a prebuilt binary):
 
 ```bash
-cargo run -p or-cli -- init my-agent --lang python --topology react --provider anthropic
+cd cli && go build -o orchustr . && cd ..
+
+./cli/orchustr init my-agent --lang python --topology react --provider anthropic
+./cli/orchustr lint my-agent
+./cli/orchustr run my-agent
+./cli/orchustr doctor
 ```
 
-Other current CLI commands:
+The Rust `or-cli` crate ships the same core commands and hosts the trace
+dashboard (the Go CLI delegates `trace` to it):
 
 ```bash
 cargo run -p or-cli -- lint docs/examples/
@@ -87,8 +94,13 @@ npm run build:native
 cd bindings/dart
 dart pub get
 dart analyze
-dart test
+dart run test/bindings_test.dart
+dart run test/agent_test.dart
 ```
+
+> The Dart suites are self-contained scripts with their own assertion
+> harness — run them with `dart run`, not `dart test` (they do not use
+> `package:test`, so `dart test` reports "No tests were found").
 
 If you want the optional native bridge:
 

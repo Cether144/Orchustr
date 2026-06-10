@@ -1,7 +1,7 @@
 [package]
 authors.workspace = true
 edition.workspace = true
-description.workspace = true
+description = "FFI gateway exposing Orchustr to the Python, Node.js, and Dart bindings."
 license.workspace = true
 name = "or-bridge"
 rust-version.workspace = true

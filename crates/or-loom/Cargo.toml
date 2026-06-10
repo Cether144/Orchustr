@@ -1,7 +1,7 @@
 [package]
 authors.workspace = true
 edition.workspace = true
-description.workspace = true
+description = "Directed-graph execution engine powering Orchustr workflows."
 license.workspace = true
 name = "or-loom"
 rust-version.workspace = true

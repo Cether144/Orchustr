@@ -15,10 +15,10 @@
 </div>
 
 <p align="center">
-  <a href="https://github.com/Cether144/Orchustr/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Cether144/Orchustr/ci.yml?branch=main&label=Rust%20CI" alt="Rust CI" /></a>
-  <a href="https://github.com/Cether144/Orchustr/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Cether144/Orchustr/ci.yml?branch=main&label=Python%20Bindings" alt="Python Bindings CI" /></a>
-  <a href="https://github.com/Cether144/Orchustr/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Cether144/Orchustr/ci.yml?branch=main&label=TypeScript%20Bindings" alt="TypeScript Bindings CI" /></a>
-  <a href="https://github.com/Cether144/Orchustr/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Cether144/Orchustr/ci.yml?branch=main&label=Dart%20Bindings" alt="Dart Bindings CI" /></a>
+  <a href="https://github.com/Regent33/Orchustr/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Regent33/Orchustr/ci.yml?branch=main&label=Rust%20CI" alt="Rust CI" /></a>
+  <a href="https://github.com/Regent33/Orchustr/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Regent33/Orchustr/ci.yml?branch=main&label=Python%20Bindings" alt="Python Bindings CI" /></a>
+  <a href="https://github.com/Regent33/Orchustr/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Regent33/Orchustr/ci.yml?branch=main&label=TypeScript%20Bindings" alt="TypeScript Bindings CI" /></a>
+  <a href="https://github.com/Regent33/Orchustr/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Regent33/Orchustr/ci.yml?branch=main&label=Dart%20Bindings" alt="Dart Bindings CI" /></a>
   <img src="https://img.shields.io/badge/Rust-1.87+-5a5a5a?style=flat-square&logo=rust" alt="Rust Version" />
   <img src="https://img.shields.io/badge/Python-3.10+-5a5a5a?style=flat-square&logo=python" alt="Python Supported" />
   <img src="https://img.shields.io/badge/TypeScript-Node_20+-5a5a5a?style=flat-square&logo=typescript" alt="TS Supported" />
@@ -36,7 +36,7 @@ The current workspace includes:
 - Serializable graph definitions through `or-schema::GraphSpec` plus `or-loom::NodeRegistry` for compiling named handlers into live graphs.
 - A local execution dashboard through `or-lens` and `or-prism`'s optional `lens` feature for in-process trace inspection.
 - MCP auto-discovery through `or-forge::ImportSummary`, `ForgeRegistry::import_all_from_mcp`, and `or-mcp::MultiMcpClient`.
-- A new `orchustr` CLI for project scaffolding, graph linting, local trace bootstrapping, and node/topology stubs.
+- A single-binary `orchustr` CLI (Go, in [`cli/`](cli)) for project scaffolding, graph linting, running projects, environment checks (`doctor`), and node/topology stubs — with `trace` delegating to the Rust `or-cli` dashboard.
 - Cross-language bindings for Python, TypeScript, and Dart, with Python and TypeScript now exposing additive `DynState`, `NodeResult`, and graph builder helpers.
 
 ## Why Teams Reach for It
@@ -108,6 +108,6 @@ opt in when you are working on the bindings themselves.
 We are building a Rust-first orchestration engine for production AI systems, and contributions are welcome across providers, tools, bindings, runtime crates, and docs.
 
 1. Read the [Contributing Guide](docs/CONTRIBUTING.md).
-2. Open an issue or pull request on the [GitHub repository](https://github.com/Cether144/Orchustr).
+2. Open an issue or pull request on the [GitHub repository](https://github.com/Regent33/Orchustr).
 
 Let's keep making the workspace clearer, safer, and more useful.

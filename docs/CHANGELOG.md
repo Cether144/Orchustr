@@ -4,6 +4,92 @@ All notable changes to Orchustr should be documented in this file.
 
 ## [Unreleased]
 
+### Goal of this change set
+
+Make the CLI the friendliest entry point into Orchustr and make `orchustr init`
+produce projects that build and run *outside* the monorepo (e.g. a Hermes
+agent in Rust or TypeScript), while fixing naming and documentation
+inconsistencies surfaced by a workspace audit.
+
+### Added
+
+- **Official Go CLI** in `cli/` (feature-based clean architecture: `domain` /
+  `data` / `presentation` per feature, constructor-injected via `app/di`).
+  Commands: `init`, `new node`, `new topology`, `lint`, `run`, `trace`
+  (delegates to the Rust binary that hosts the or-lens dashboard), and the new
+  `doctor`. Path arguments now default to the current directory. Unit tests
+  cover every use case (happy + failure paths); `init`/`lint`/`run` verified
+  end-to-end for all four languages on Windows.
+  Files: `cli/**` (new); Rust crates untouched except as listed below.
+- **Hermes-ready init templates** (embedded in the Go CLI):
+  - Rust: replaces the broken `path = "../../crates/or-schema"` dependency
+    (which only resolved inside this repo) with a git dependency; `main.rs` now
+    actually loads `graph.yaml` through `or-schema`. Verified: `cargo run`
+    succeeds in a scaffolded project outside the repo.
+  - TypeScript: now generates `package.json` + `tsconfig.json` (previously only
+    a bare `src/index.ts`); `npm install && orchustr run` verified.
+  - Python: now generates a `main.py` entrypoint (previously `orchustr run`
+    had nothing to launch) and comments out the `orchustr==0.1.2` requirement,
+    which is not on PyPI and made `pip install -r requirements.txt` fail.
+  - Dart: now generates `pubspec.yaml` and `bin/<package>.dart` (previously
+    `lib/main.dart` with no pubspec, so `dart run` always failed).
+  - All languages: node stubs are generated per topology (plan-execute now
+    scaffolds `plan`/`execute_step`/`done` instead of always `think`/`act`),
+    and every project gets a `.gitignore` that excludes `.env`.
+- **`McpClient` / `McpServer` type aliases** in `or-mcp` (additive) so the
+  crate's main types match its name; `NexusClient`/`NexusServer` remain.
+  File: `crates/or-mcp/src/lib.rs`.
+
+- **Span ingestion endpoint** (`POST /api/spans` in or-lens): accepts a
+  single `LensSpan` object or an array, validates ids, records into the
+  collector, and returns `202 {"accepted": n}` (`422` on invalid spans).
+  Previously the dashboard could only display spans collected in-process, so
+  `orchustr trace` always showed an empty screen; now any external process —
+  Rust, Python, TypeScript, Dart, or `curl` — can stream spans in. Covered by
+  integration tests and verified live end-to-end.
+- **`demo_dashboard` example for or-lens**
+  (`crates/or-lens/examples/demo_dashboard.rs`): serves the dashboard on port
+  7700 with fabricated traces (success, error, in-progress, nested spans) so
+  the UI can be previewed without running a real agent.
+  `start_dashboard_server_with_collector` is now re-exported at the crate
+  root (additive).
+
+### Changed
+
+- **or-lens dashboard rebuilt as a React + TypeScript app**
+  (`crates/or-lens/dashboard/`, Vite; built output committed to
+  `crates/or-lens/assets/dist/` and embedded via `include_str!`, so cargo
+  consumers never need Node). New app-shell layout: left sidebar with the
+  official Orchustr logo, nav, and live trace list with filtering; breadcrumb
+  topbar with a pause/resume live pill; stat cards (Nodes / Duration /
+  Errored / Running) with semantic badges; execution map (SVG); hierarchical
+  trace tree with depth guides and per-span timing bars; inspector panel with
+  state deltas. Carries over all prior fixes: semantic green/amber/red status
+  colors, skip-render on unchanged payloads, polling paused while the tab is
+  hidden, keyboard-accessible rows, tooltips, favicon. Verified in-browser at
+  desktop and mobile widths, including live ingestion via `POST /api/spans`.
+  Rebuild with `cd crates/or-lens/dashboard && npm install && npm run build`.
+- **Per-crate `description`s** in all 29 crate `Cargo.toml`s (previously every
+  crate inherited the identical workspace description).
+- **Docs**: repo links fixed from `Cether144/Orchustr` to `Regent33/Orchustr`
+  (`README.md`, `docs/README.md`, `docs/QUICKSTART.md`); QUICKSTART and the
+  workspace README now present the Go CLI as the official CLI;
+  `docs/crates/or-cli/README.md` clarifies the Rust crate's remaining role
+  (trace dashboard host + library API); glossary gains `Lens` and `Schema`
+  entries plus Forge-vs-Tools and Prism-vs-Lens disambiguation;
+  `docs/reference/crate-index.md` lists the new or-mcp aliases.
+
+### Fixed
+
+- **Dart binding test instructions**: QUICKSTART documented `dart test`, which
+  reports "No tests were found" — the Dart suites are self-contained scripts
+  with their own assertion harness. Docs now say `dart run test/<file>.dart`
+  (all 14 checks verified passing).
+- **Python binding test collection on Windows**: orphaned, permission-locked
+  `pytest-cache-files-*` sandbox directories aborted `pytest tests` with
+  `PermissionError`. `bindings/python/pytest.ini` now sets `norecursedirs`
+  so collection skips them (14 passed, 4 skipped verified).
+
 ## [0.1.3]
 
 ### Added

@@ -1,0 +1,19 @@
+name: simple-react-agent
+version: "0.1.0"
+entry: think
+exits: [done]
+nodes:
+  - id: think
+    handler: nodes::think
+    metadata: {}
+  - id: act
+    handler: nodes::act
+    metadata: {}
+  - id: done
+    handler: nodes::done
+    metadata: {}
+edges:
+  - from: think
+    to: act
+  - from: act
+    to: done

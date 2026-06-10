@@ -18,7 +18,9 @@ pub mod tracing_layer;
 #[cfg(feature = "dashboard")]
 pub use collector::{LensSpan, LensSpanStatus, SpanCollector, TraceSummary};
 #[cfg(feature = "dashboard")]
-pub use server::{LensError, LensHandle, start_dashboard_server};
+pub use server::{
+    LensError, LensHandle, start_dashboard_server, start_dashboard_server_with_collector,
+};
 #[cfg(feature = "dashboard")]
 pub use snapshot::{ExecutionNodeSnapshot, ExecutionSnapshot};
 #[cfg(feature = "dashboard")]

@@ -1,7 +1,7 @@
 [package]
 authors.workspace = true
 edition.workspace = true
-description.workspace = true
+description = "Parallel branch execution with deterministic state merging for Orchustr."
 license.workspace = true
 name = "or-relay"
 rust-version.workspace = true
