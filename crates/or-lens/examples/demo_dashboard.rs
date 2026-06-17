@@ -8,6 +8,7 @@
 use or_lens::{LensSpan, LensSpanStatus, SpanCollector, start_dashboard_server_with_collector};
 use serde_json::json;
 
+#[allow(clippy::too_many_arguments)]
 fn span(
     trace: &str,
     id: &str,
@@ -40,25 +41,45 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // A healthy ReAct-style run with a nested tool call.
     for record in [
         span(
-            "trace-react-ok", "s1", None, "think", base, Some(base + 420),
+            "trace-react-ok",
+            "s1",
+            None,
+            "think",
+            base,
+            Some(base + 420),
             LensSpanStatus::Completed,
             json!({"input": "summarize the report"}),
             json!({"input": "summarize the report", "thought": "need the file"}),
         ),
         span(
-            "trace-react-ok", "s2", Some("s1"), "act:read_file", base + 430, Some(base + 980),
+            "trace-react-ok",
+            "s2",
+            Some("s1"),
+            "act:read_file",
+            base + 430,
+            Some(base + 980),
             LensSpanStatus::Completed,
             json!({"thought": "need the file"}),
             json!({"thought": "need the file", "file": "report.md"}),
         ),
         span(
-            "trace-react-ok", "s3", Some("s1"), "act:summarize", base + 990, Some(base + 2400),
+            "trace-react-ok",
+            "s3",
+            Some("s1"),
+            "act:summarize",
+            base + 990,
+            Some(base + 2400),
             LensSpanStatus::Completed,
             json!({"file": "report.md"}),
             json!({"file": "report.md", "summary": "Q2 revenue up 14%"}),
         ),
         span(
-            "trace-react-ok", "s4", None, "done", base + 2410, Some(base + 2460),
+            "trace-react-ok",
+            "s4",
+            None,
+            "done",
+            base + 2410,
+            Some(base + 2460),
             LensSpanStatus::Completed,
             json!({"summary": "Q2 revenue up 14%"}),
             json!({"summary": "Q2 revenue up 14%"}),
@@ -70,19 +91,34 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // A run that errored mid-flight with one node still open.
     for record in [
         span(
-            "trace-plan-errored", "p1", None, "plan", base + 60_000, Some(base + 60_900),
+            "trace-plan-errored",
+            "p1",
+            None,
+            "plan",
+            base + 60_000,
+            Some(base + 60_900),
             LensSpanStatus::Completed,
             json!({"goal": "book travel"}),
             json!({"goal": "book travel", "steps": ["search", "book"]}),
         ),
         span(
-            "trace-plan-errored", "p2", Some("p1"), "execute:search", base + 61_000, Some(base + 64_200),
+            "trace-plan-errored",
+            "p2",
+            Some("p1"),
+            "execute:search",
+            base + 61_000,
+            Some(base + 64_200),
             LensSpanStatus::Errored,
             json!({"steps": ["search", "book"]}),
             json!({"steps": ["search", "book"], "error": "provider timeout after 3 retries"}),
         ),
         span(
-            "trace-plan-errored", "p3", Some("p1"), "execute:book", base + 64_300, None,
+            "trace-plan-errored",
+            "p3",
+            Some("p1"),
+            "execute:book",
+            base + 64_300,
+            None,
             LensSpanStatus::InProgress,
             json!({}),
             json!({}),

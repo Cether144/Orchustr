@@ -102,10 +102,10 @@ fn validate_routes<T: OrchState>(
         }
     }
 
-    if let Some(default_route) = default_route {
-        if !names.contains(default_route) {
-            return Err(CompassError::MissingDefaultRoute(default_route.to_owned()));
-        }
+    if let Some(default_route) = default_route
+        && !names.contains(default_route)
+    {
+        return Err(CompassError::MissingDefaultRoute(default_route.to_owned()));
     }
     Ok(())
 }

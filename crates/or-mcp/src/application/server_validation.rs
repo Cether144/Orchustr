@@ -12,7 +12,9 @@ pub(crate) fn validate_input(schema: &Schema, value: &Value) -> Result<(), McpEr
         return if accepts {
             Ok(())
         } else {
-            Err(McpError::ToolExecution("input rejected by schema".to_owned()))
+            Err(McpError::ToolExecution(
+                "input rejected by schema".to_owned(),
+            ))
         };
     }
 
@@ -39,9 +41,10 @@ pub(crate) fn validate_input(schema: &Schema, value: &Value) -> Result<(), McpEr
 fn validate_type(types: &Value, value: &Value) -> Result<(), McpError> {
     let matches = match types {
         Value::String(kind) => instance_matches(kind, value),
-        Value::Array(kinds) => {
-            kinds.iter().filter_map(Value::as_str).any(|kind| instance_matches(kind, value))
-        }
+        Value::Array(kinds) => kinds
+            .iter()
+            .filter_map(Value::as_str)
+            .any(|kind| instance_matches(kind, value)),
         // No recognizable type constraint — nothing to enforce.
         _ => true,
     };

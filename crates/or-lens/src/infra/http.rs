@@ -35,7 +35,10 @@ async fn index() -> Html<&'static str> {
 }
 
 async fn styles() -> impl IntoResponse {
-    ([(header::CONTENT_TYPE, "text/css; charset=utf-8")], DASHBOARD_CSS)
+    (
+        [(header::CONTENT_TYPE, "text/css; charset=utf-8")],
+        DASHBOARD_CSS,
+    )
 }
 
 async fn script() -> impl IntoResponse {

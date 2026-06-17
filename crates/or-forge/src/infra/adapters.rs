@@ -22,9 +22,9 @@ pub(crate) fn validate_tool_args(schema: &Schema, value: &Value) -> Result<(), F
         validate_type(instance_type, value)?;
     }
     if let Some(Value::Array(required)) = schema.get("required") {
-        let map = value.as_object().ok_or_else(|| {
-            ForgeError::InvalidArguments("expected object arguments".to_owned())
-        })?;
+        let map = value
+            .as_object()
+            .ok_or_else(|| ForgeError::InvalidArguments("expected object arguments".to_owned()))?;
         for key in required.iter().filter_map(Value::as_str) {
             if !map.contains_key(key) {
                 return Err(ForgeError::InvalidArguments(format!(
