@@ -19,7 +19,7 @@
   <a href="https://github.com/Regent33/Orchustr/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Regent33/Orchustr/ci.yml?branch=main&label=Python%20Bindings" alt="Python Bindings CI" /></a>
   <a href="https://github.com/Regent33/Orchustr/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Regent33/Orchustr/ci.yml?branch=main&label=TypeScript%20Bindings" alt="TypeScript Bindings CI" /></a>
   <a href="https://github.com/Regent33/Orchustr/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Regent33/Orchustr/ci.yml?branch=main&label=Dart%20Bindings" alt="Dart Bindings CI" /></a>
-  <img src="https://img.shields.io/badge/Rust-1.87+-5a5a5a?style=flat-square&logo=rust" alt="Rust Version" />
+  <img src="https://img.shields.io/badge/Rust-1.94+-5a5a5a?style=flat-square&logo=rust" alt="Rust Version" />
   <img src="https://img.shields.io/badge/Python-3.10+-5a5a5a?style=flat-square&logo=python" alt="Python Supported" />
   <img src="https://img.shields.io/badge/TypeScript-Node_20+-5a5a5a?style=flat-square&logo=typescript" alt="TS Supported" />
   <img src="https://img.shields.io/badge/Dart-3.0+-5a5a5a?style=flat-square&logo=dart" alt="Dart Supported" />

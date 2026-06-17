@@ -3,7 +3,7 @@ use crate::domain::errors::SieveError;
 pub trait JsonSchemaOutput:
     serde::de::DeserializeOwned + schemars::JsonSchema + Send + Sync + 'static
 {
-    fn output_schema() -> schemars::schema::RootSchema
+    fn output_schema() -> schemars::Schema
     where
         Self: Sized,
     {

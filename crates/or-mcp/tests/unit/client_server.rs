@@ -2,7 +2,6 @@ use or_mcp::{
     JsonRpcId, JsonRpcMessage, JsonRpcRequest, JsonRpcSuccessResponse, McpTask, McpTool,
     McpTransport, NexusClient, NexusClientTrait, NexusServer, ServerCard,
 };
-use schemars::schema::{InstanceType, RootSchema, SchemaObject, SingleOrVec};
 use std::collections::VecDeque;
 use std::sync::Arc;
 use tokio::sync::Mutex;
@@ -134,13 +133,6 @@ fn echo_tool() -> McpTool {
     McpTool {
         name: "echo".to_owned(),
         description: "Echo arguments".to_owned(),
-        input_schema: RootSchema {
-            meta_schema: None,
-            schema: SchemaObject {
-                instance_type: Some(SingleOrVec::Single(Box::new(InstanceType::Object))),
-                ..Default::default()
-            },
-            definitions: Default::default(),
-        },
+        input_schema: schemars::json_schema!({ "type": "object" }),
     }
 }

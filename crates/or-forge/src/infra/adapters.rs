@@ -1,47 +1,51 @@
 use crate::domain::errors::ForgeError;
-use schemars::schema::{InstanceType, RootSchema, Schema, SingleOrVec};
+use schemars::Schema;
+use serde_json::Value;
 
-pub(crate) fn validate_tool_args(
-    schema: &RootSchema,
-    value: &serde_json::Value,
-) -> Result<(), ForgeError> {
-    validate_schema(&Schema::Object(schema.schema.clone()), value)
-}
-
-fn validate_schema(schema: &Schema, value: &serde_json::Value) -> Result<(), ForgeError> {
-    match schema {
-        Schema::Bool(true) => Ok(()),
-        Schema::Bool(false) => Err(ForgeError::InvalidArguments(
-            "schema rejected value".to_owned(),
-        )),
-        Schema::Object(object) => {
-            if let Some(instance_type) = &object.instance_type {
-                validate_type(instance_type, value)?;
-            }
-            if let Some(validation) = &object.object {
-                let map = value.as_object().ok_or_else(|| {
-                    ForgeError::InvalidArguments("expected object arguments".to_owned())
-                })?;
-                for key in &validation.required {
-                    if !map.contains_key(key) {
-                        return Err(ForgeError::InvalidArguments(format!(
-                            "missing required argument: {key}"
-                        )));
-                    }
-                }
-            }
+/// Validates tool call arguments against the tool's input schema. Under
+/// schemars 1.x a `Schema` is a thin wrapper over a JSON value, so we
+/// introspect the JSON keywords directly, enforcing `type` and `required`
+/// the same way the typed schemars 0.8 walker did.
+pub(crate) fn validate_tool_args(schema: &Schema, value: &Value) -> Result<(), ForgeError> {
+    // A boolean schema accepts (`true`) or rejects (`false`) everything.
+    if let Some(accepts) = schema.as_bool() {
+        return if accepts {
             Ok(())
+        } else {
+            Err(ForgeError::InvalidArguments(
+                "schema rejected value".to_owned(),
+            ))
+        };
+    }
+
+    if let Some(instance_type) = schema.get("type") {
+        validate_type(instance_type, value)?;
+    }
+    if let Some(Value::Array(required)) = schema.get("required") {
+        let map = value.as_object().ok_or_else(|| {
+            ForgeError::InvalidArguments("expected object arguments".to_owned())
+        })?;
+        for key in required.iter().filter_map(Value::as_str) {
+            if !map.contains_key(key) {
+                return Err(ForgeError::InvalidArguments(format!(
+                    "missing required argument: {key}"
+                )));
+            }
         }
     }
+    Ok(())
 }
 
-fn validate_type(
-    types: &SingleOrVec<InstanceType>,
-    value: &serde_json::Value,
-) -> Result<(), ForgeError> {
+/// `type` may be a single string or an array of strings (a union); the value
+/// must match at least one.
+fn validate_type(types: &Value, value: &Value) -> Result<(), ForgeError> {
     let matches = match types {
-        SingleOrVec::Single(kind) => instance_matches(kind.as_ref(), value),
-        SingleOrVec::Vec(kinds) => kinds.iter().any(|kind| instance_matches(kind, value)),
+        Value::String(kind) => instance_matches(kind, value),
+        Value::Array(kinds) => kinds
+            .iter()
+            .filter_map(Value::as_str)
+            .any(|kind| instance_matches(kind, value)),
+        _ => true,
     };
     if matches {
         Ok(())
@@ -52,14 +56,15 @@ fn validate_type(
     }
 }
 
-fn instance_matches(kind: &InstanceType, value: &serde_json::Value) -> bool {
+fn instance_matches(kind: &str, value: &Value) -> bool {
     match kind {
-        InstanceType::Null => value.is_null(),
-        InstanceType::Boolean => value.is_boolean(),
-        InstanceType::Object => value.is_object(),
-        InstanceType::Array => value.is_array(),
-        InstanceType::Number => value.is_number(),
-        InstanceType::Integer => value.as_i64().is_some() || value.as_u64().is_some(),
-        InstanceType::String => value.is_string(),
+        "null" => value.is_null(),
+        "boolean" => value.is_boolean(),
+        "object" => value.is_object(),
+        "array" => value.is_array(),
+        "number" => value.is_number(),
+        "integer" => value.as_i64().is_some() || value.as_u64().is_some(),
+        "string" => value.is_string(),
+        _ => true,
     }
 }

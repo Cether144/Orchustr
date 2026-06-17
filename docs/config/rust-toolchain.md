@@ -3,7 +3,7 @@
 ## File
 
 - Path: `rust-toolchain.toml`
-- Channel: `1.87.0`
+- Channel: `1.96.0`
 - Profile: `minimal`
 - Components: `clippy`, `rustfmt`
 

@@ -67,7 +67,7 @@ Orchustr is a Rust-based AI orchestration workspace organized around focused cra
 
 ## Compatibility
 
-- Minimum Rust version: `1.87.0`
+- Minimum Rust version: `1.94.0`
 - Python package metadata: `>=3.10`
 - TypeScript package target: Node `20+`
 - Dart package metadata: `>=3.0.0 <4.0.0`

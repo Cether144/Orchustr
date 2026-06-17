@@ -1,4 +1,4 @@
-use schemars::schema::RootSchema;
+use schemars::Schema;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -66,7 +66,7 @@ pub enum JsonRpcPacket {
 pub struct McpTool {
     pub name: String,
     pub description: String,
-    pub input_schema: RootSchema,
+    pub input_schema: Schema,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]

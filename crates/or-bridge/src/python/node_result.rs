@@ -8,7 +8,7 @@ fn map_loom_error(error: or_loom::LoomError) -> PyErr {
 }
 
 /// Python wrapper around `or_loom::NodeResult<or_core::DynState>`.
-#[pyclass(module = "orchustr._orchustr")]
+#[pyclass(module = "orchustr._orchustr", from_py_object)]
 #[derive(Clone)]
 pub struct PyNodeResult {
     pub(crate) inner: NodeResult<or_core::DynState>,

@@ -52,7 +52,9 @@ impl VectorStoreClient for PgVectorClient {
             )"#,
             cfg.name, cfg.dimension
         );
-        sqlx::query(&sql)
+        // Table name/dimension are interpolated identifiers (not bindable);
+        // sqlx 0.9 requires asserting non-literal SQL is injection-audited.
+        sqlx::query(sqlx::AssertSqlSafe(sql))
             .execute(&self.pool)
             .await
             .map_err(|e| VectorError::Transport {
@@ -80,7 +82,7 @@ impl VectorStoreClient for PgVectorClient {
                    SET embedding = EXCLUDED.embedding, metadata = EXCLUDED.metadata"#,
                 batch.collection
             );
-            sqlx::query(&sql)
+            sqlx::query(sqlx::AssertSqlSafe(sql))
                 .bind(&item.id)
                 .bind(&vec_str)
                 .bind(&meta)
@@ -96,7 +98,7 @@ impl VectorStoreClient for PgVectorClient {
 
     async fn delete(&self, req: DeleteRequest) -> Result<(), VectorError> {
         let sql = format!(r#"DELETE FROM "{}" WHERE id = ANY($1)"#, req.collection);
-        sqlx::query(&sql)
+        sqlx::query(sqlx::AssertSqlSafe(sql))
             .bind(&req.ids)
             .execute(&self.pool)
             .await
@@ -122,7 +124,7 @@ impl VectorStoreClient for PgVectorClient {
                FROM "{}" ORDER BY embedding <=> $1::vector LIMIT $2"#,
             filter.collection
         );
-        let rows = sqlx::query(&sql)
+        let rows = sqlx::query(sqlx::AssertSqlSafe(sql))
             .bind(&vec_str)
             .bind(filter.top_k as i64)
             .fetch_all(&self.pool)

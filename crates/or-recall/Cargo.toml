@@ -18,7 +18,7 @@ serde_json.workspace = true
 thiserror.workspace = true
 tokio.workspace = true
 tracing.workspace = true
-sqlx = { version = "0.8.6", default-features = false, features = ["runtime-tokio-rustls", "sqlite"], optional = true }
+sqlx = { version = "0.9.0", default-features = false, features = ["runtime-tokio", "tls-rustls", "sqlite"], optional = true }
 
 [dev-dependencies]
 mockall.workspace = true

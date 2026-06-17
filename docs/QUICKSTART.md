@@ -8,7 +8,7 @@ Install what you need for your target workflow:
 
 | Target | Requirement |
 |---|---|
-| Rust workspace | Rust `1.87.0+` |
+| Rust workspace | Rust `1.94.0+` |
 | Python bindings | Python `3.10+` and `pip` |
 | TypeScript bindings | Node.js `20+` and `npm` |
 | Dart bindings | Dart SDK `3.0+` |

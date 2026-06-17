@@ -1,14 +1,14 @@
 use pyo3::prelude::*;
 
 /// Python wrapper that mirrors `or_pipeline::PipelineBuilder<or_core::DynState>` structure.
-#[pyclass(module = "orchustr._orchustr")]
+#[pyclass(module = "orchustr._orchustr", from_py_object)]
 #[derive(Clone, Default)]
 pub struct PyPipelineBuilder {
     nodes: Vec<String>,
 }
 
 /// Python wrapper that exposes a built pipeline shape.
-#[pyclass(module = "orchustr._orchustr")]
+#[pyclass(module = "orchustr._orchustr", from_py_object)]
 #[derive(Clone)]
 pub struct PyPipeline {
     nodes: Vec<String>,

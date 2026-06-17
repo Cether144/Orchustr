@@ -1,7 +1,7 @@
 use pyo3::prelude::*;
 
 /// Python wrapper that mirrors the `or-colony` orchestrator builder pattern.
-#[pyclass(module = "orchustr._orchustr")]
+#[pyclass(module = "orchustr._orchustr", from_py_object)]
 #[derive(Clone, Default)]
 pub struct PyColonyBuilder {
     members: Vec<(String, String)>,

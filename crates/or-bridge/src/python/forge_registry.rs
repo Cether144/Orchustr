@@ -8,7 +8,7 @@ use std::collections::BTreeMap;
 /// invoked through `invoke(name, args)`. This restores the documented
 /// behaviour of the registry — a Python callable supplied via `register`
 /// is the function that runs when the tool is invoked.
-#[pyclass(module = "orchustr._orchustr")]
+#[pyclass(module = "orchustr._orchustr", from_py_object)]
 #[derive(Default)]
 pub struct PyForgeRegistry {
     handlers: BTreeMap<String, Py<PyAny>>,
@@ -16,7 +16,7 @@ pub struct PyForgeRegistry {
 
 impl Clone for PyForgeRegistry {
     fn clone(&self) -> Self {
-        Python::with_gil(|py| Self {
+        Python::attach(|py| Self {
             handlers: self
                 .handlers
                 .iter()

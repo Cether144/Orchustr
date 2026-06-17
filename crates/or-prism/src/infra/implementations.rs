@@ -10,7 +10,7 @@ use tracing_subscriber::prelude::*;
 pub(crate) fn install(config: &PrismConfig) -> Result<(), PrismError> {
     let exporter = opentelemetry_otlp::SpanExporter::builder()
         .with_http()
-        .with_http_client(reqwest_otel::Client::new())
+        .with_http_client(reqwest::Client::new())
         .with_endpoint(config.otlp_endpoint.clone())
         .build()
         .map_err(|error| PrismError::Exporter(error.to_string()))?;

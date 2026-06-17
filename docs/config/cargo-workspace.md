@@ -4,7 +4,7 @@
 
 - Path: `Cargo.toml`
 - Edition: `2024`
-- Rust version: `1.87.0`
+- Rust version: `1.94.0`
 - License: `MIT OR Apache-2.0`
 - Workspace version: `0.1.3`
 

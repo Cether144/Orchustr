@@ -7,7 +7,7 @@ use pyo3::prelude::*;
 /// The callable is invoked by `complete_messages(messages)` and is
 /// expected to return the completion result as a Python object (e.g. a
 /// dict with `text`/`usage`/`finish_reason`).
-#[pyclass(module = "orchustr._orchustr")]
+#[pyclass(module = "orchustr._orchustr", from_py_object)]
 #[derive(Default)]
 pub struct PyConduitProvider {
     label: Option<String>,
@@ -16,7 +16,7 @@ pub struct PyConduitProvider {
 
 impl Clone for PyConduitProvider {
     fn clone(&self) -> Self {
-        Python::with_gil(|py| Self {
+        Python::attach(|py| Self {
             label: self.label.clone(),
             handler: self.handler.as_ref().map(|h| h.clone_ref(py)),
         })

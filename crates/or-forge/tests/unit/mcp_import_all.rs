@@ -1,6 +1,5 @@
 use or_forge::ForgeRegistry;
 use or_mcp::McpTool;
-use schemars::schema::{InstanceType, RootSchema, SchemaObject, SingleOrVec};
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::thread;
@@ -123,13 +122,6 @@ fn tool(name: &str) -> McpTool {
     McpTool {
         name: name.to_owned(),
         description: format!("{name} tool"),
-        input_schema: RootSchema {
-            meta_schema: None,
-            schema: SchemaObject {
-                instance_type: Some(SingleOrVec::Single(Box::new(InstanceType::Object))),
-                ..Default::default()
-            },
-            definitions: Default::default(),
-        },
+        input_schema: schemars::json_schema!({ "type": "object" }),
     }
 }

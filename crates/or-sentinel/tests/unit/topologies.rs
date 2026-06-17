@@ -10,7 +10,6 @@ use or_sentinel::{
     ReActTopology, ReflectionTopology, SentinelAgent, SentinelAgentBuilder, SentinelConfig,
     StepOutcome,
 };
-use schemars::schema::RootSchema;
 use std::collections::VecDeque;
 use std::sync::{
     Arc, Mutex,
@@ -204,15 +203,6 @@ fn registry() -> ForgeRegistry {
     registry
 }
 
-fn schema_object() -> RootSchema {
-    RootSchema {
-        meta_schema: None,
-        schema: schemars::schema::SchemaObject {
-            instance_type: Some(schemars::schema::SingleOrVec::Single(Box::new(
-                schemars::schema::InstanceType::Object,
-            ))),
-            ..Default::default()
-        },
-        definitions: Default::default(),
-    }
+fn schema_object() -> schemars::Schema {
+    schemars::json_schema!({ "type": "object" })
 }

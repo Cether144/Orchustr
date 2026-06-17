@@ -1,12 +1,12 @@
 use or_mcp::McpTool;
-use schemars::schema::RootSchema;
+use schemars::Schema;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ForgeTool {
     pub name: String,
     pub description: String,
-    pub input_schema: RootSchema,
+    pub input_schema: Schema,
 }
 
 impl ForgeTool {

@@ -4,7 +4,7 @@ use pyo3::exceptions::{PyKeyError, PyValueError};
 use pyo3::prelude::*;
 
 /// Python wrapper around `or_core::DynState`.
-#[pyclass(module = "orchustr._orchustr")]
+#[pyclass(module = "orchustr._orchustr", from_py_object)]
 #[derive(Clone, Default)]
 pub struct PyDynState {
     pub(crate) inner: DynState,

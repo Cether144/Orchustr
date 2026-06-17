@@ -3,7 +3,6 @@ mod security;
 
 use or_forge::{ForgeError, ForgeRegistry, ForgeTool};
 use or_mcp::{McpTool, NexusClientTrait};
-use schemars::schema::RootSchema;
 
 #[derive(Clone)]
 struct MockClient;
@@ -72,15 +71,6 @@ async fn invoke_rejects_unknown_tools() {
     assert_eq!(result, Err(ForgeError::UnknownTool("missing".to_owned())));
 }
 
-fn schema_object() -> RootSchema {
-    schemars::schema::RootSchema {
-        meta_schema: None,
-        schema: schemars::schema::SchemaObject {
-            instance_type: Some(schemars::schema::SingleOrVec::Single(Box::new(
-                schemars::schema::InstanceType::Object,
-            ))),
-            ..Default::default()
-        },
-        definitions: Default::default(),
-    }
+fn schema_object() -> schemars::Schema {
+    schemars::json_schema!({ "type": "object" })
 }

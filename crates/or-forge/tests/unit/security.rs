@@ -1,7 +1,6 @@
 //! Tests for the forge arg size guard and tool registration edge cases.
 
 use or_forge::{ForgeError, ForgeRegistry, ForgeTool};
-use schemars::schema::RootSchema;
 
 #[tokio::test]
 async fn invoke_rejects_oversized_arguments() {
@@ -79,15 +78,6 @@ async fn registry_tracks_tool_count() {
     assert!(!registry.is_empty());
 }
 
-fn schema_object() -> RootSchema {
-    schemars::schema::RootSchema {
-        meta_schema: None,
-        schema: schemars::schema::SchemaObject {
-            instance_type: Some(schemars::schema::SingleOrVec::Single(Box::new(
-                schemars::schema::InstanceType::Object,
-            ))),
-            ..Default::default()
-        },
-        definitions: Default::default(),
-    }
+fn schema_object() -> schemars::Schema {
+    schemars::json_schema!({ "type": "object" })
 }

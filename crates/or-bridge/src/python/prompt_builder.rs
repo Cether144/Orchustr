@@ -4,14 +4,14 @@ use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
 /// Python wrapper around `or_beacon::PromptBuilder`.
-#[pyclass(module = "orchustr._orchustr")]
+#[pyclass(module = "orchustr._orchustr", from_py_object)]
 #[derive(Clone, Default)]
 pub struct PyPromptBuilder {
     inner: PromptBuilder,
 }
 
 /// Python wrapper around `or_beacon::PromptTemplate`.
-#[pyclass(module = "orchustr._orchustr")]
+#[pyclass(module = "orchustr._orchustr", from_py_object)]
 #[derive(Clone)]
 pub struct PyPromptTemplate {
     inner: PromptTemplate,

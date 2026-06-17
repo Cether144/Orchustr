@@ -5,7 +5,6 @@ use or_core::{RetryPolicy, TokenBudget, TokenUsage};
 use or_forge::{ForgeRegistry, ForgeTool};
 use or_sentinel::domain::contracts::{PlanExecuteAgentTrait, SentinelAgentTrait};
 use or_sentinel::{PlanExecuteAgent, SentinelAgent, SentinelConfig, StepOutcome};
-use schemars::schema::RootSchema;
 use std::collections::VecDeque;
 use std::sync::{Arc, Mutex};
 
@@ -156,15 +155,6 @@ fn registry() -> ForgeRegistry {
     registry
 }
 
-fn schema_object() -> RootSchema {
-    schemars::schema::RootSchema {
-        meta_schema: None,
-        schema: schemars::schema::SchemaObject {
-            instance_type: Some(schemars::schema::SingleOrVec::Single(Box::new(
-                schemars::schema::InstanceType::Object,
-            ))),
-            ..Default::default()
-        },
-        definitions: Default::default(),
-    }
+fn schema_object() -> schemars::Schema {
+    schemars::json_schema!({ "type": "object" })
 }

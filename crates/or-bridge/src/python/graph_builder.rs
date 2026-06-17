@@ -9,7 +9,7 @@ use std::collections::HashMap;
 /// graph. For Python-driven execution use the pure-Python
 /// `orchustr.GraphBuilder` in `bindings/python/orchustr/graph.py`,
 /// which calls these stored handlers in topological order.
-#[pyclass(module = "orchustr._orchustr")]
+#[pyclass(module = "orchustr._orchustr", from_py_object)]
 #[derive(Default)]
 pub struct PyGraphBuilder {
     nodes: Vec<String>,
@@ -21,7 +21,7 @@ pub struct PyGraphBuilder {
 
 impl Clone for PyGraphBuilder {
     fn clone(&self) -> Self {
-        Python::with_gil(|py| Self {
+        Python::attach(|py| Self {
             nodes: self.nodes.clone(),
             handlers: self
                 .handlers
@@ -37,7 +37,7 @@ impl Clone for PyGraphBuilder {
 
 /// Python wrapper that exposes a built graph shape together with the
 /// originally registered handlers.
-#[pyclass(module = "orchustr._orchustr")]
+#[pyclass(module = "orchustr._orchustr", from_py_object)]
 pub struct PyExecutionGraph {
     nodes: Vec<String>,
     handlers: HashMap<String, Py<PyAny>>,
@@ -48,7 +48,7 @@ pub struct PyExecutionGraph {
 
 impl Clone for PyExecutionGraph {
     fn clone(&self) -> Self {
-        Python::with_gil(|py| Self {
+        Python::attach(|py| Self {
             nodes: self.nodes.clone(),
             handlers: self
                 .handlers
@@ -94,7 +94,7 @@ impl PyGraphBuilder {
     }
 
     fn build(&self) -> PyExecutionGraph {
-        Python::with_gil(|py| PyExecutionGraph {
+        Python::attach(|py| PyExecutionGraph {
             nodes: self.nodes.clone(),
             handlers: self
                 .handlers

@@ -4,7 +4,7 @@ The repository defines a single GitHub Actions workflow at `.github/workflows/ci
 
 ## Current Strategy
 
-- **Rust job**: runs on Ubuntu, macOS, and Windows with Rust `1.87.0`.
+- **Rust job**: runs on Ubuntu, macOS, and Windows with Rust `1.96.0`.
 - **Python bindings job**: builds and tests the Python package on Ubuntu with Python `3.14.4`.
 - **TypeScript bindings job**: installs, type-checks, and tests the TypeScript package on Ubuntu with Node `20`.
 - **Dart bindings job**: builds the native bridge, analyzes, and tests the Dart package on Ubuntu with the latest stable Dart SDK.

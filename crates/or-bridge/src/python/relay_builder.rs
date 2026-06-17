@@ -1,14 +1,14 @@
 use pyo3::prelude::*;
 
 /// Python wrapper that mirrors `or_relay::RelayBuilder<or_core::DynState>`.
-#[pyclass(module = "orchustr._orchustr")]
+#[pyclass(module = "orchustr._orchustr", from_py_object)]
 #[derive(Clone, Default)]
 pub struct PyRelayBuilder {
     branches: Vec<String>,
 }
 
 /// Python wrapper that exposes a built relay plan shape.
-#[pyclass(module = "orchustr._orchustr")]
+#[pyclass(module = "orchustr._orchustr", from_py_object)]
 #[derive(Clone)]
 pub struct PyRelayPlan {
     branches: Vec<String>,

@@ -30,7 +30,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]   # Cross-platform validation
-        rust: [1.87.0]                                      # Pinned toolchain version
+        rust: [1.96.0]                                      # Pinned toolchain version
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4                           # Fetch repository contents
@@ -53,7 +53,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@master                 # Rust toolchain for maturin build
-        with: { toolchain: "1.87.0" }
+        with: { toolchain: "1.96.0" }
       - uses: actions/setup-python@v5
         with: { python-version: "3.14.4" }                # CI Python version
       - run: pip install maturin pytest                     # Install build/test tooling
@@ -75,7 +75,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@master                 # Rust toolchain for native bridge build
-        with: { toolchain: "1.87.0" }
+        with: { toolchain: "1.96.0" }
       - uses: dart-lang/setup-dart@v1                      # Install Dart SDK
       - run: cd bindings/dart && dart pub get               # Resolve dependencies
       - run: cd bindings/dart && dart format --output=none --set-exit-if-changed .  # Enforce formatting
@@ -98,7 +98,7 @@ jobs:
 ## Matrix Strategy
 
 - OS matrix: Ubuntu, macOS, Windows for the main Rust job.
-- Rust matrix: single version `1.87.0`.
+- Rust matrix: single version `1.96.0`.
 
 ## Cache Strategy
 
